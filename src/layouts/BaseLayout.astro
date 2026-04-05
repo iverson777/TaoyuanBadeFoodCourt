@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 interface Props {
   title?: string;
   activePage?: 'browse' | 'random' | 'map' | 'favorites';
@@ -15,9 +17,6 @@ const base = import.meta.env.BASE_URL;
   <meta name="description" content="桃園八德美食探索 - 快速找到附近好吃的餐廳" />
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
-  <style>
-    @import '../styles/global.css';
-  </style>
 </head>
 <body>
   <slot />
