@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import data from '../data/restaurants.json';
+
+const cuisineLabels: Record<string, string> = {
+  taiwanese: '台式', japanese: '日式', korean: '韓式', chinese: '中式',
+  western: '西式', southeast_asian: '東南亞', hotpot: '火鍋', beverage: '飲料', other: '其他',
+};
+---
+
+<BaseLayout title="美食地圖 | 八德美食" activePage="map">
+  <div class="page-header">
+    <h1>美食地圖</h1>
+    <p>點擊標記查看餐廳資訊</p>
+  </div>
+
+  <div class="map-container" id="map-container">
+    <div id="map" style="width:100%;height:100%;"></div>
+  </div>
+
+  <script type="application/json" id="map-data" set:html={JSON.stringify(data.restaurants.map(r => ({
+    id: r.id,
+    name: r.name,
+    lat: r.lat,
+    lng: r.lng,
+    rating: r.rating,
+    reviewCount: r.reviewCount,
+    priceRange: r.priceRange,
+    cuisine: r.cuisine,
+    address: r.address,
+    hours: r.hours,
+    dishes: r.dishes,
+    googleMapsUrl: r.googleMapsUrl,
+    category: r.category,
+  })))} />
+
+  <script is:inline define:vars={{ cuisineLabels }}>
+  function initMap() {
+    const restaurants = JSON.parse(document.getElementById('map-data').textContent);
+    const center = { lat: 24.9510, lng: 121.2850 };
+
+    const map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 15,
+      center: center,
+      mapId: 'bade-food-map',
+      disableDefaultUI: true,
+      zoomControl: true,
+      gestureHandling: 'greedy',
+    });
+
+    const infoWindow = new google.maps.InfoWindow();
+
+    const cuisineColors = {
+      taiwanese: '#e8803a',
+      japanese: '#e63946',
+      korean: '#9b59b6',
+      chinese: '#d4a017',
+      western: '#2a9d8f',
+      southeast_asian: '#27ae60',
+      hotpot: '#c0392b',
+      beverage: '#3498db',
+      other: '#95a5a6',
+    };
+
+    restaurants.forEach(r => {
+      if (!r.lat || !r.lng) return;
+
+      const marker = new google.maps.Marker({
+        position: { lat: r.lat, lng: r.lng },
+        map: map,
+        title: r.name,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: cuisineColors[r.cuisine] || '#e8803a',
+          fillOpacity: 0.9,
+          strokeColor: '#fff',
+          strokeWeight: 2,
+          scale: 10,
+        },
+      });
+
+      const price = '$'.repeat(r.priceRange);
+      const cLabel = cuisineLabels[r.cuisine] || r.cuisine;
+      const dishesText = r.dishes && r.dishes.length > 0 ? r.dishes.join(' / ') : '';
+
+      marker.addListener('click', () => {
+        infoWindow.setContent(`
+          <div style="font-family:-apple-system,sans-serif;max-width:220px;line-height:1.4;">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">${r.name}</div>
+            <div style="font-size:12px;color:#666;margin-bottom:4px;">
+              ⭐ ${r.rating} (${r.reviewCount}) | ${price} | ${cLabel}
+            </div>
+            ${dishesText ? `<div style="font-size:11px;color:#e8803a;margin-bottom:4px;">招牌：${dishesText}</div>` : ''}
+            <div style="font-size:11px;color:#888;">${r.address}</div>
+            <div style="font-size:11px;color:#888;margin-bottom:6px;">${r.hours}</div>
+            <a href="${r.googleMapsUrl}" target="_blank" rel="noopener"
+               style="display:inline-block;background:#e8803a;color:#fff;padding:4px 12px;border-radius:6px;font-size:12px;text-decoration:none;">
+              導航
+            </a>
+          </div>
+        `);
+        infoWindow.open(map, marker);
+      });
+    });
+  }
+
+  window.initMap = initMap;
+  </script>
+
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQSkrYp-4i8rwj6g_atgi1-_1Lv3ZrJOU&callback=initMap">
+  </script>
+
+  <style>
+    .map-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 56px;
+      z-index: 1;
+    }
+    .page-header {
+      position: relative;
+      z-index: 2;
+      background: rgba(250, 247, 242, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      margin: 0;
+      padding: 10px 12px 6px;
+    }
+  </style>
+</BaseLayout>
