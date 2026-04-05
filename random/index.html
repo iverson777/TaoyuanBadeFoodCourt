@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="zh-Hant" data-astro-cid-37fxchfa> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="桃園八德美食探索 - 快速找到附近好吃的餐廳"><title>隨機選餐廳 | 八德美食</title><link rel="icon" type="image/svg+xml" href="/TaoyuanBadeFoodCourt/favicon.svg"><link rel="stylesheet" href="/TaoyuanBadeFoodCourt/_astro/favorites.Cx4K0-aL.css"></head> <body data-astro-cid-37fxchfa>  <div class="page-header"> <h1>今天吃什麼？</h1> <p>按按鈕或搖手機，讓命運決定！</p> </div> <div class="container"> <!-- Quick Filters for Random --> <div class="filter-section"> <h3>篩選條件（可選）</h3> <div class="filter-pills" data-filter-group="r-category" style="margin-bottom:6px;"> <button class="filter-pill" data-value="breakfast">早餐</button> <button class="filter-pill" data-value="lunch">午餐</button> <button class="filter-pill" data-value="dinner">晚餐</button> <button class="filter-pill" data-value="snacks">小吃</button> </div> <div class="filter-pills" data-filter-group="r-cuisine" style="margin-bottom:6px;"> <button class="filter-pill" data-value="taiwanese">台式</button> <button class="filter-pill" data-value="japanese">日式</button> <button class="filter-pill" data-value="korean">韓式</button> <button class="filter-pill" data-value="western">西式</button> <button class="filter-pill" data-value="hotpot">火鍋</button> </div> <div class="filter-section"> <h3>步行距離</h3> <div class="filter-pills" data-filter-group="r-walking"> <button class="filter-pill" data-value="5">5分鐘內</button> <button class="filter-pill" data-value="10">10分鐘內</button> <button class="filter-pill" data-value="15">15分鐘內</button> </div> </div> <div class="filter-section"> <h3>Lucky 最低評分</h3> <div class="filter-range"> <input type="range" id="lucky-rating" min="3.5" max="5" step="0.1" value="4.3"> <span id="lucky-rating-value">4.3★</span> </div> </div> </div> <div class="picker-container"> <div class="picker-buttons"> <button class="picker-btn random" id="random-btn">
+🎲<br>隨機選
+</button> <button class="picker-btn lucky" id="lucky-btn">
+✨<br>Lucky!
+</button> </div> <div class="picker-result" id="picker-result"> <div class="empty-state"> <div class="icon">👆</div> <p>按上面的按鈕開始！</p> <p style="font-size:0.75rem;margin-top:8px;">也可以搖一搖手機</p> </div> </div> </div> </div>  <script type="application/json" id="restaurant-data">[{"id":"q-burger-bade","name":"Q Burger 八德店","category":["breakfast","lunch"],"cuisine":"western","priceRange":1,"rating":4.2,"reviewCount":1250,"address":"桃園市八德區廣福路100號","googleMapsUrl":"https://maps.google.com/?q=Q+Burger+八德店","landmark":"guangfeng","walkingMinutes":5,"tags":["漢堡","早午餐","速食"],"hours":"06:00-14:00","image":null,"dishes":["花生牛肉堡","脆雞堡","薯餅蛋餅"],"lat":24.9465,"lng":121.289},{"id":"chicken-soup-uncle","name":"雞湯大叔","category":["lunch","dinner"],"cuisine":"taiwanese","priceRange":2,"rating":4.5,"reviewCount":680,"address":"桃園市八德區義勇街58號","googleMapsUrl":"https://maps.google.com/?q=雞湯大叔+八德","landmark":"yiyong","walkingMinutes":8,"tags":["雞湯","定食","家常菜"],"hours":"11:00-14:00, 17:00-21:00","image":null,"dishes":["招牌雞湯","雞腿定食","麻油雞飯"],"lat":24.953,"lng":121.2845},{"id":"qian-du-hotpot","name":"錢都涮涮鍋 八德店","category":["lunch","dinner"],"cuisine":"hotpot","priceRange":2,"rating":4.1,"reviewCount":2100,"address":"桃園市八德區廣福路200號","googleMapsUrl":"https://maps.google.com/?q=錢都涮涮鍋+八德","landmark":"guangfeng","walkingMinutes":6,"tags":["火鍋","涮涮鍋","平價"],"hours":"11:00-22:00","image":null,"dishes":["豬肉涮涮鍋","海鮮鍋","牛肉鍋"],"lat":24.947,"lng":121.2915},{"id":"mei-er-mei-bade","name":"美而美早餐店","category":["breakfast"],"cuisine":"taiwanese","priceRange":1,"rating":4,"reviewCount":320,"address":"桃園市八德區大湳里中正路15號","googleMapsUrl":"https://maps.google.com/?q=美而美+八德+大湳","landmark":"danan","walkingMinutes":10,"tags":["早餐","三明治","蛋餅"],"hours":"05:30-11:00","image":null,"dishes":["總匯三明治","原味蛋餅","鮪魚吐司"],"lat":24.9565,"lng":121.278},{"id":"sushi-express-bade","name":"爭鮮迴轉壽司 八德店","category":["lunch","dinner"],"cuisine":"japanese","priceRange":2,"rating":4,"reviewCount":1580,"address":"桃園市八德區廣豐新天地2F","googleMapsUrl":"https://maps.google.com/?q=爭鮮+廣豐新天地","landmark":"guangfeng","walkingMinutes":3,"tags":["壽司","迴轉壽司","日料"],"hours":"11:00-21:30","image":null,"dishes":["鮭魚壽司","炙燒鮪魚","味噌湯"],"lat":24.9455,"lng":121.2878},{"id":"danan-beef-noodle","name":"大湳牛肉麵","category":["lunch","dinner"],"cuisine":"chinese","priceRange":1,"rating":4.4,"reviewCount":450,"address":"桃園市八德區大湳市場旁","googleMapsUrl":"https://maps.google.com/?q=大湳牛肉麵+八德","landmark":"danan","walkingMinutes":12,"tags":["牛肉麵","麵食","小吃"],"hours":"10:30-20:00","image":null,"dishes":["紅燒牛肉麵","清燉牛肉麵","小菜拼盤"],"lat":24.957,"lng":121.2775},{"id":"korean-kimchi-house","name":"韓香屋韓式料理","category":["lunch","dinner"],"cuisine":"korean","priceRange":2,"rating":4.3,"reviewCount":390,"address":"桃園市八德區義勇街120號","googleMapsUrl":"https://maps.google.com/?q=韓香屋+八德","landmark":"yiyong","walkingMinutes":7,"tags":["韓式","石鍋拌飯","韓式炸雞"],"hours":"11:00-14:00, 17:00-21:00","image":null,"dishes":["石鍋拌飯","韓式炸雞","豆腐鍋"],"lat":24.9535,"lng":121.284},{"id":"fifty-lan-bade","name":"50嵐 八德廣福店","category":["snacks"],"cuisine":"beverage","priceRange":1,"rating":4.2,"reviewCount":890,"address":"桃園市八德區廣福路150號","googleMapsUrl":"https://maps.google.com/?q=50嵐+八德","landmark":"guangfeng","walkingMinutes":4,"tags":["飲料","手搖","茶飲"],"hours":"09:00-22:00","image":null,"dishes":["四季春茶","波霸奶茶","檸檬綠茶"],"lat":24.9462,"lng":121.29},{"id":"pepper-lunch-bade","name":"胡椒廚房 廣豐店","category":["lunch","dinner"],"cuisine":"japanese","priceRange":2,"rating":4.1,"reviewCount":720,"address":"桃園市八德區廣豐新天地3F","googleMapsUrl":"https://maps.google.com/?q=胡椒廚房+廣豐新天地","landmark":"guangfeng","walkingMinutes":3,"tags":["鐵板","牛排","丼飯"],"hours":"11:00-21:30","image":null,"dishes":["胡椒牛排","照燒雞腿","咖哩牛肉飯"],"lat":24.9455,"lng":121.288},{"id":"bade-braised-pork","name":"八德滷肉飯","category":["lunch","dinner","snacks"],"cuisine":"taiwanese","priceRange":1,"rating":4.6,"reviewCount":280,"address":"桃園市八德區大湳市場內","googleMapsUrl":"https://maps.google.com/?q=八德滷肉飯+大湳","landmark":"danan","walkingMinutes":11,"tags":["滷肉飯","小吃","銅板美食"],"hours":"06:30-14:00","image":null,"dishes":["招牌滷肉飯","滷蛋","筍絲湯"],"lat":24.9568,"lng":121.2772},{"id":"pho-vietnam-bade","name":"越好吃越南料理","category":["lunch","dinner"],"cuisine":"southeast_asian","priceRange":1,"rating":4.3,"reviewCount":510,"address":"桃園市八德區義勇街85號","googleMapsUrl":"https://maps.google.com/?q=越好吃+八德","landmark":"yiyong","walkingMinutes":9,"tags":["越南","河粉","春捲"],"hours":"11:00-21:00","image":null,"dishes":["牛肉河粉","越式春捲","法國麵包"],"lat":24.9528,"lng":121.2848},{"id":"mcdonalds-bade","name":"麥當勞 八德介壽店","category":["breakfast","lunch","dinner","snacks"],"cuisine":"western","priceRange":1,"rating":3.9,"reviewCount":3200,"address":"桃園市八德區介壽路一段","googleMapsUrl":"https://maps.google.com/?q=麥當勞+八德","landmark":"other","walkingMinutes":15,"tags":["速食","漢堡","薯條"],"hours":"06:00-00:00","image":null,"dishes":["大麥克","麥克雞塊","薯條"],"lat":24.951,"lng":121.295},{"id":"danan-oyster-omelet","name":"大湳蚵仔煎","category":["dinner","snacks"],"cuisine":"taiwanese","priceRange":1,"rating":4.4,"reviewCount":370,"address":"桃園市八德區大湳市場夜市","googleMapsUrl":"https://maps.google.com/?q=大湳蚵仔煎+八德","landmark":"danan","walkingMinutes":12,"tags":["蚵仔煎","夜市","小吃"],"hours":"16:00-22:00","image":null,"dishes":["蚵仔煎","蝦仁煎","花枝煎"],"lat":24.9572,"lng":121.277},{"id":"saizeriya-guangfeng","name":"薩莉亞義式餐廳 廣豐店","category":["lunch","dinner"],"cuisine":"western","priceRange":1,"rating":4,"reviewCount":1100,"address":"桃園市八德區廣豐新天地3F","googleMapsUrl":"https://maps.google.com/?q=薩莉亞+廣豐新天地","landmark":"guangfeng","walkingMinutes":3,"tags":["義大利麵","披薩","平價西餐"],"hours":"11:00-22:00","image":null,"dishes":["明太子義大利麵","瑪格麗特披薩","焗烤飯"],"lat":24.9456,"lng":121.2879},{"id":"yiyong-breakfast-king","name":"義勇街早餐王","category":["breakfast"],"cuisine":"taiwanese","priceRange":1,"rating":4.5,"reviewCount":210,"address":"桃園市八德區義勇街32號","googleMapsUrl":"https://maps.google.com/?q=義勇街早餐王+八德","landmark":"yiyong","walkingMinutes":6,"tags":["早餐","蛋餅","豆漿"],"hours":"05:00-11:30","image":null,"dishes":["手工蛋餅","鹹豆漿","飯糰"],"lat":24.9525,"lng":121.285},{"id":"sukiya-bade","name":"すき家 Sukiya 八德店","category":["lunch","dinner"],"cuisine":"japanese","priceRange":1,"rating":4.1,"reviewCount":960,"address":"桃園市八德區廣福路88號","googleMapsUrl":"https://maps.google.com/?q=Sukiya+八德","landmark":"guangfeng","walkingMinutes":5,"tags":["丼飯","牛丼","日式速食"],"hours":"07:00-00:00","image":null,"dishes":["牛丼","咖哩飯","鰻魚丼"],"lat":24.9468,"lng":121.2885},{"id":"starbucks-guangfeng","name":"星巴克 廣豐新天地店","category":["snacks"],"cuisine":"beverage","priceRange":2,"rating":4.2,"reviewCount":650,"address":"桃園市八德區廣豐新天地1F","googleMapsUrl":"https://maps.google.com/?q=星巴克+廣豐新天地","landmark":"guangfeng","walkingMinutes":3,"tags":["咖啡","甜點","輕食"],"hours":"08:00-22:00","image":null,"dishes":["拿鐵","星冰樂","可頌"],"lat":24.9453,"lng":121.2876},{"id":"danan-fried-chicken","name":"大湳鹹酥雞","category":["dinner","snacks"],"cuisine":"taiwanese","priceRange":1,"rating":4.3,"reviewCount":420,"address":"桃園市八德區大湳市場口","googleMapsUrl":"https://maps.google.com/?q=大湳鹹酥雞+八德","landmark":"danan","walkingMinutes":11,"tags":["鹹酥雞","炸物","宵夜"],"hours":"15:00-23:00","image":null,"dishes":["鹹酥雞","炸魷魚","地瓜薯條"],"lat":24.9566,"lng":121.2774}]</script> <script>(function(){const cuisineLabels = {"taiwanese":"台式","japanese":"日式","korean":"韓式","chinese":"中式","western":"西式","southeast_asian":"東南亞","hotpot":"火鍋","beverage":"飲料","other":"其他"};
+const categoryLabels = {"breakfast":"早餐","lunch":"午餐","dinner":"晚餐","snacks":"小吃"};
+const cuisineEmojis = {"taiwanese":"🍚","japanese":"🍣","korean":"🥘","chinese":"🥟","western":"🍔","southeast_asian":"🍜","hotpot":"🫕","beverage":"🧋","other":"🍽️"};
+
+  (function() {
+    const allData = JSON.parse(document.getElementById('restaurant-data').textContent);
+    const resultEl = document.getElementById('picker-result');
+    const randomBtn = document.getElementById('random-btn');
+    const luckyBtn = document.getElementById('lucky-btn');
+    const luckySlider = document.getElementById('lucky-rating');
+    const luckyValue = document.getElementById('lucky-rating-value');
+    const base = document.querySelector('link[rel="icon"]')?.href?.replace('favicon.svg', '') || '/TaoyuanBadeFoodCourt/';
+
+    // Filter state
+    const rFilters = { category: null, cuisine: null, walking: null };
+
+    // Filter pill toggles
+    document.querySelectorAll('[data-filter-group^="r-"]').forEach(group => {
+      const key = group.dataset.filterGroup.replace('r-', '');
+      group.addEventListener('click', (e) => {
+        const pill = e.target.closest('.filter-pill');
+        if (!pill) return;
+        const wasActive = pill.classList.contains('active');
+        group.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        if (wasActive) { pill.classList.remove('active'); rFilters[key] = null; }
+        else { pill.classList.add('active'); rFilters[key] = pill.dataset.value; }
+      });
+    });
+
+    luckySlider.addEventListener('input', () => {
+      luckyValue.textContent = luckySlider.value + '★';
+    });
+
+    function getFiltered() {
+      return allData.filter(r => {
+        if (rFilters.category && !r.category.includes(rFilters.category)) return false;
+        if (rFilters.cuisine && r.cuisine !== rFilters.cuisine) return false;
+        if (rFilters.walking && r.walkingMinutes > parseInt(rFilters.walking)) return false;
+        if (window.BadeFood.isBlacklisted(r.id)) return false;
+        return true;
+      });
+    }
+
+    function getLucky() {
+      const minRating = parseFloat(luckySlider.value);
+      return getFiltered().filter(r => r.rating >= minRating);
+    }
+
+    function pickRandom(list) {
+      if (list.length === 0) return null;
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function renderResult(restaurant, isLucky) {
+      if (!restaurant) {
+        resultEl.innerHTML = '<div class="empty-state"><div class="icon">😅</div><p>沒有符合條件的餐廳</p></div>';
+        return;
+      }
+
+      const r = restaurant;
+      const priceLabel = '$'.repeat(r.priceRange);
+      const cLabel = cuisineLabels[r.cuisine] || r.cuisine;
+      const catLabels = r.category.map(c => categoryLabels[c] || c);
+      const personal = window.BadeFood.getPersonal(r.id);
+      const isFav = window.BadeFood.isFavorite(r.id);
+
+      const emoji = cuisineEmojis[r.cuisine] || '🍽️';
+      const imageHtml = r.image
+        ? `<div class="card-image"><img src="${r.image}" alt="${r.name}" loading="lazy" /></div>`
+        : `<div class="card-image"><div class="card-image-placeholder"><span class="card-image-emoji">${emoji}</span></div></div>`;
+      const dishesHtml = r.dishes && r.dishes.length > 0
+        ? `<div class="card-dishes"><span class="card-dishes-label">招牌：</span>${r.dishes.join(' / ')}</div>`
+        : '';
+
+      resultEl.innerHTML = `
+        <div class="card" style="width:100%">
+          ${isLucky ? '<span class="lucky-badge" style="position:absolute;top:10px;right:10px;z-index:1;">Lucky!</span>' : ''}
+          ${imageHtml}
+          <div class="card-header">
+            <div>
+              <div class="card-name">${r.name}</div>
+              <div class="card-meta">
+                <span class="card-rating">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  ${r.rating}
+                </span>
+                <span>(${r.reviewCount})</span>
+                <span class="card-price">${priceLabel}</span>
+                <span class="card-walking">🚶 ${r.walkingMinutes}分</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-tags">
+            <span class="card-cuisine-tag">${cLabel}</span>
+            ${catLabels.map(c => `<span class="card-tag">${c}</span>`).join('')}
+            ${r.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+          </div>
+          ${dishesHtml}
+          <div class="card-address">${r.address}</div>
+          <div class="card-hours">${r.hours}</div>
+          ${personal.visitCount > 0 ? `<div style="font-size:0.8rem;color:var(--color-text-light);margin-top:6px;">已造訪 ${personal.visitCount} 次${personal.myRating ? ' | 私心 ' + '★'.repeat(personal.myRating) : ''}</div>` : ''}
+          <div class="card-actions">
+            <a class="card-action-btn primary" href="${r.googleMapsUrl}" target="_blank" rel="noopener">Google Maps 導航</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function animatePick(list, isLucky) {
+      if (list.length === 0) {
+        renderResult(null, isLucky);
+        return;
+      }
+
+      let count = 0;
+      const totalFlips = 8 + Math.floor(Math.random() * 5);
+      const final = pickRandom(list);
+
+      resultEl.classList.add('spinning');
+
+      const interval = setInterval(() => {
+        const temp = pickRandom(list);
+        renderResult(temp, isLucky);
+        count++;
+
+        if (count >= totalFlips) {
+          clearInterval(interval);
+          resultEl.classList.remove('spinning');
+          renderResult(final, isLucky);
+        }
+      }, 120);
+    }
+
+    randomBtn.addEventListener('click', () => animatePick(getFiltered(), false));
+    luckyBtn.addEventListener('click', () => animatePick(getLucky(), true));
+
+    // Device shake detection
+    let lastShake = 0;
+    function handleMotion(e) {
+      const acc = e.accelerationIncludingGravity;
+      if (!acc) return;
+      const force = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+      if (force > 35 && Date.now() - lastShake > 2000) {
+        lastShake = Date.now();
+        animatePick(getFiltered(), false);
+      }
+    }
+
+    // Request permission for iOS
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      document.addEventListener('click', function enableShake() {
+        DeviceMotionEvent.requestPermission().then(state => {
+          if (state === 'granted') window.addEventListener('devicemotion', handleMotion);
+        }).catch(() => {});
+        document.removeEventListener('click', enableShake);
+      }, { once: true });
+    } else if (typeof DeviceMotionEvent !== 'undefined') {
+      window.addEventListener('devicemotion', handleMotion);
+    }
+  })();
+  })();</script>  <nav class="bottom-nav" aria-label="主選單" data-astro-cid-37fxchfa> <a href="/TaoyuanBadeFoodCourt/" data-astro-cid-37fxchfa> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-37fxchfa><circle cx="11" cy="11" r="8" data-astro-cid-37fxchfa></circle><line x1="21" y1="21" x2="16.65" y2="16.65" data-astro-cid-37fxchfa></line></svg> <span data-astro-cid-37fxchfa>探索</span> </a> <a href="/TaoyuanBadeFoodCourt/map/" data-astro-cid-37fxchfa> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-37fxchfa><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" data-astro-cid-37fxchfa></path><circle cx="12" cy="10" r="3" data-astro-cid-37fxchfa></circle></svg> <span data-astro-cid-37fxchfa>地圖</span> </a> <a href="/TaoyuanBadeFoodCourt/random/" class="active" data-astro-cid-37fxchfa> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-37fxchfa><rect x="2" y="2" width="20" height="20" rx="5" data-astro-cid-37fxchfa></rect><circle cx="8" cy="8" r="1.5" fill="currentColor" data-astro-cid-37fxchfa></circle><circle cx="16" cy="8" r="1.5" fill="currentColor" data-astro-cid-37fxchfa></circle><circle cx="8" cy="16" r="1.5" fill="currentColor" data-astro-cid-37fxchfa></circle><circle cx="16" cy="16" r="1.5" fill="currentColor" data-astro-cid-37fxchfa></circle><circle cx="12" cy="12" r="1.5" fill="currentColor" data-astro-cid-37fxchfa></circle></svg> <span data-astro-cid-37fxchfa>隨機</span> </a> <a href="/TaoyuanBadeFoodCourt/favorites/" data-astro-cid-37fxchfa> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-37fxchfa><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" data-astro-cid-37fxchfa></path></svg> <span data-astro-cid-37fxchfa>收藏</span> </a> </nav> <script>
+    // === Favorites & Personal Data Helpers (Global) ===
+    window.BadeFood = {
+      FAVORITES_KEY: 'bade-food-favorites',
+      PERSONAL_KEY: 'bade-food-personal',
+
+      getFavorites() {
+        try { return JSON.parse(localStorage.getItem(this.FAVORITES_KEY)) || []; }
+        catch { return []; }
+      },
+
+      isFavorite(id) {
+        return this.getFavorites().includes(id);
+      },
+
+      toggleFavorite(id) {
+        const favs = this.getFavorites();
+        const idx = favs.indexOf(id);
+        if (idx >= 0) favs.splice(idx, 1);
+        else favs.push(id);
+        localStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favs));
+        return idx < 0; // returns true if added
+      },
+
+      getPersonalData() {
+        try { return JSON.parse(localStorage.getItem(this.PERSONAL_KEY)) || {}; }
+        catch { return {}; }
+      },
+
+      getPersonal(id) {
+        const data = this.getPersonalData();
+        return data[id] || { visitCount: 0, myRating: 0, note: '', blacklisted: false };
+      },
+
+      setPersonal(id, fields) {
+        const data = this.getPersonalData();
+        data[id] = { ...this.getPersonal(id), ...fields };
+        localStorage.setItem(this.PERSONAL_KEY, JSON.stringify(data));
+        return data[id];
+      },
+
+      incrementVisit(id) {
+        const p = this.getPersonal(id);
+        return this.setPersonal(id, { visitCount: p.visitCount + 1 });
+      },
+
+      isBlacklisted(id) {
+        return this.getPersonal(id).blacklisted;
+      }
+    };
+  </script> </body> </html>
