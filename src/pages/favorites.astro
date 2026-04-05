@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import data from '../data/restaurants.json';
+
+const cuisineLabels: Record<string, string> = {
+  taiwanese: '台式', japanese: '日式', korean: '韓式', chinese: '中式',
+  western: '西式', southeast_asian: '東南亞', hotpot: '火鍋', beverage: '飲料', other: '其他',
+};
+const categoryLabels: Record<string, string> = {
+  breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snacks: '小吃',
+};
+---
+
+<BaseLayout title="我的收藏 | 八德美食" activePage="favorites">
+  <div class="page-header">
+    <h1>我的收藏</h1>
+    <p>口袋名單 & 個人紀錄</p>
+  </div>
+
+  <div class="container">
+    <div class="sort-bar">
+      <span class="result-count" id="fav-count">載入中...</span>
+      <select id="fav-sort">
+        <option value="added">加入順序</option>
+        <option value="rating">評分最高</option>
+        <option value="my-rating">私心評價</option>
+        <option value="visits">去過最多</option>
+      </select>
+    </div>
+
+    <div class="card-grid" id="fav-grid"></div>
+
+    <div class="empty-state" id="fav-empty">
+      <div class="icon">💝</div>
+      <p>還沒有收藏的餐廳</p>
+      <p>到探索頁按愛心加入收藏吧</p>
+    </div>
+  </div>
+
+  <script type="application/json" id="all-restaurant-data" set:html={JSON.stringify(data.restaurants)} />
+
+  <script is:inline define:vars={{ cuisineLabels, categoryLabels }}>
+  (function() {
+    const allData = JSON.parse(document.getElementById('all-restaurant-data').textContent);
+    const grid = document.getElementById('fav-grid');
+    const emptyEl = document.getElementById('fav-empty');
+    const countEl = document.getElementById('fav-count');
+    const sortSelect = document.getElementById('fav-sort');
+
+    function renderFavorites() {
+      const favIds = window.BadeFood.getFavorites();
+      const favRestaurants = favIds
+        .map(id => allData.find(r => r.id === id))
+        .filter(Boolean);
+
+      countEl.textContent = favRestaurants.length + ' 間收藏';
+      emptyEl.classList.toggle('hidden', favRestaurants.length > 0);
+      grid.classList.toggle('hidden', favRestaurants.length === 0);
+
+      grid.innerHTML = favRestaurants.map(r => {
+        const priceLabel = '$'.repeat(r.priceRange);
+        const cLabel = cuisineLabels[r.cuisine] || r.cuisine;
+        const catLabels = r.category.map(c => categoryLabels[c] || c);
+        const personal = window.BadeFood.getPersonal(r.id);
+
+        return `
+          <div class="card" data-id="${r.id}" data-rating="${r.rating}" data-review-count="${r.reviewCount}">
+            <div class="card-header">
+              <div>
+                <div class="card-name">${r.name}</div>
+                <div class="card-meta">
+                  <span class="card-rating">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    ${r.rating}
+                  </span>
+                  <span>(${r.reviewCount})</span>
+                  <span class="card-price">${priceLabel}</span>
+                  <span class="card-walking">🚶 ${r.walkingMinutes}分</span>
+                </div>
+              </div>
+              <button class="card-fav-btn is-fav" data-unfav-id="${r.id}" title="移除收藏">&#9829;</button>
+            </div>
+            <div class="card-tags">
+              <span class="card-cuisine-tag">${cLabel}</span>
+              ${catLabels.map(c => `<span class="card-tag">${c}</span>`).join('')}
+            </div>
+            <div class="card-address">${r.address}</div>
+            <div class="card-hours">${r.hours}</div>
+            ${personal.visitCount > 0 ? `<div style="font-size:0.8rem;color:var(--color-text-light);margin-top:6px;">已造訪 ${personal.visitCount} 次${personal.myRating ? ' | 私心 ' + '★'.repeat(personal.myRating) : ''}</div>` : ''}
+            ${personal.note ? `<div style="font-size:0.8rem;color:var(--color-text-light);margin-top:4px;">📝 ${personal.note}</div>` : ''}
+            <div class="card-actions">
+              <a class="card-action-btn primary" href="${r.googleMapsUrl}" target="_blank" rel="noopener">Google Maps</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Remove from favorites
+    grid.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-unfav-id]');
+      if (btn) {
+        const id = btn.dataset.unfavId;
+        window.BadeFood.toggleFavorite(id);
+        renderFavorites();
+      }
+    });
+
+    // Sort
+    sortSelect.addEventListener('change', () => {
+      renderFavorites();
+      const cards = Array.from(grid.querySelectorAll('.card'));
+      const sortBy = sortSelect.value;
+      const sorted = cards.sort((a, b) => {
+        switch (sortBy) {
+          case 'rating':
+            return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+          case 'my-rating': {
+            const ar = window.BadeFood.getPersonal(a.dataset.id).myRating || 0;
+            const br = window.BadeFood.getPersonal(b.dataset.id).myRating || 0;
+            return br - ar;
+          }
+          case 'visits': {
+            const av = window.BadeFood.getPersonal(a.dataset.id).visitCount || 0;
+            const bv = window.BadeFood.getPersonal(b.dataset.id).visitCount || 0;
+            return bv - av;
+          }
+          default: return 0;
+        }
+      });
+      sorted.forEach(c => grid.appendChild(c));
+    });
+
+    renderFavorites();
+  })();
+  </script>
+</BaseLayout>

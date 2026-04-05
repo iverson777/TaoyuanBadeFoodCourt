@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FilterBar from '../components/FilterBar.astro';
+import RestaurantCard from '../components/RestaurantCard.astro';
+import data from '../data/restaurants.json';
+
+const restaurants = data.restaurants.sort((a, b) => b.rating - a.rating);
+---
+
+<BaseLayout title="八德美食探索" activePage="browse">
+  <div class="page-header">
+    <h1>八德美食探索</h1>
+    <p>桃園八德 | 廣豐 | 大湳 | 義勇街</p>
+  </div>
+
+  <FilterBar />
+
+  <div class="container">
+    <div class="sort-bar">
+      <span class="result-count" id="result-count">{restaurants.length} 間餐廳</span>
+      <select id="sort-select">
+        <option value="rating">評分最高</option>
+        <option value="my-rating">私心評價</option>
+        <option value="reviews">評價最多</option>
+        <option value="visits">去過最多</option>
+        <option value="walking">距離最近</option>
+        <option value="price-asc">價格低到高</option>
+        <option value="price-desc">價格高到低</option>
+      </select>
+    </div>
+
+    <div class="card-grid" id="card-grid">
+      {restaurants.map(r => (
+        <RestaurantCard {...r} />
+      ))}
+    </div>
+
+    <div class="empty-state hidden" id="empty-state">
+      <div class="icon">🍽️</div>
+      <p>沒有符合條件的餐廳</p>
+      <p>試試調整篩選條件吧</p>
+    </div>
+  </div>
+
+  <script is:inline>
+  (function() {
+    const grid = document.getElementById('card-grid');
+    const cards = Array.from(grid.querySelectorAll('.card'));
+    const countEl = document.getElementById('result-count');
+    const emptyEl = document.getElementById('empty-state');
+    const sortSelect = document.getElementById('sort-select');
+    const ratingSlider = document.getElementById('rating-filter');
+    const ratingValue = document.getElementById('rating-filter-value');
+
+    // Active filters state
+    const activeFilters = {
+      category: null,
+      cuisine: null,
+      price: null,
+      walking: null,
+      minRating: 0,
+      personal: null,
+    };
+
+    // --- Filter Pill Toggle ---
+    document.querySelectorAll('.filter-pills').forEach(group => {
+      const filterGroup = group.dataset.filterGroup;
+      group.addEventListener('click', (e) => {
+        const pill = e.target.closest('.filter-pill');
+        if (!pill) return;
+
+        const wasActive = pill.classList.contains('active');
+
+        // For personal group, allow multiple; for others, single select
+        if (filterGroup !== 'personal') {
+          group.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        }
+
+        if (wasActive) {
+          pill.classList.remove('active');
+          if (filterGroup !== 'personal') activeFilters[filterGroup] = null;
+        } else {
+          pill.classList.add('active');
+          if (filterGroup !== 'personal') activeFilters[filterGroup] = pill.dataset.value;
+        }
+
+        applyFilters();
+      });
+    });
+
+    // --- Rating Slider ---
+    ratingSlider.addEventListener('input', () => {
+      const val = parseFloat(ratingSlider.value);
+      activeFilters.minRating = val;
+      ratingValue.textContent = val === 0 ? '不限' : val + '★';
+      applyFilters();
+    });
+
+    // --- Apply Filters ---
+    function applyFilters() {
+      const personalPills = document.querySelectorAll('[data-filter-group="personal"] .filter-pill.active');
+      const personalFilters = Array.from(personalPills).map(p => p.dataset.value);
+      const showBlacklisted = personalFilters.includes('show-blacklisted');
+      const visitedFilter = personalFilters.includes('visited') ? 'visited' : personalFilters.includes('unvisited') ? 'unvisited' : null;
+
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const id = card.dataset.id;
+        const categories = card.dataset.categories.split(',');
+        const cuisine = card.dataset.cuisine;
+        const price = card.dataset.price;
+        const rating = parseFloat(card.dataset.rating);
+        const walking = parseInt(card.dataset.walking);
+        const personal = window.BadeFood.getPersonal(id);
+        const isBlacklisted = personal.blacklisted;
+
+        let show = true;
+
+        // Category filter
+        if (activeFilters.category && !categories.includes(activeFilters.category)) show = false;
+        // Cuisine filter
+        if (activeFilters.cuisine && cuisine !== activeFilters.cuisine) show = false;
+        // Price filter
+        if (activeFilters.price && price !== activeFilters.price) show = false;
+        // Rating filter
+        if (activeFilters.minRating > 0 && rating < activeFilters.minRating) show = false;
+        // Walking filter
+        if (activeFilters.walking && walking > parseInt(activeFilters.walking)) show = false;
+        // Blacklist filter
+        if (isBlacklisted && !showBlacklisted) show = false;
+        // Visited filter
+        if (visitedFilter === 'visited' && personal.visitCount === 0) show = false;
+        if (visitedFilter === 'unvisited' && personal.visitCount > 0) show = false;
+
+        card.style.display = show ? '' : 'none';
+        card.classList.toggle('blacklisted', isBlacklisted);
+        if (show) visibleCount++;
+      });
+
+      countEl.textContent = visibleCount + ' 間餐廳';
+      emptyEl.classList.toggle('hidden', visibleCount > 0);
+      grid.classList.toggle('hidden', visibleCount === 0);
+    }
+
+    // --- Sort ---
+    sortSelect.addEventListener('change', () => {
+      const sortBy = sortSelect.value;
+      const sorted = [...cards].sort((a, b) => {
+        switch (sortBy) {
+          case 'rating':
+            return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+          case 'reviews':
+            return parseInt(b.dataset.reviewCount) - parseInt(a.dataset.reviewCount);
+          case 'walking':
+            return parseInt(a.dataset.walking) - parseInt(b.dataset.walking);
+          case 'price-asc':
+            return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+          case 'price-desc':
+            return parseInt(b.dataset.price) - parseInt(a.dataset.price);
+          case 'my-rating': {
+            const ar = window.BadeFood.getPersonal(a.dataset.id).myRating || 0;
+            const br = window.BadeFood.getPersonal(b.dataset.id).myRating || 0;
+            return br - ar;
+          }
+          case 'visits': {
+            const av = window.BadeFood.getPersonal(a.dataset.id).visitCount || 0;
+            const bv = window.BadeFood.getPersonal(b.dataset.id).visitCount || 0;
+            return bv - av;
+          }
+          default:
+            return 0;
+        }
+      });
+      sorted.forEach(card => grid.appendChild(card));
+    });
+
+    // --- Favorites toggle ---
+    document.addEventListener('click', (e) => {
+      const favBtn = e.target.closest('.card-fav-btn');
+      if (favBtn) {
+        const id = favBtn.dataset.favId;
+        const added = window.BadeFood.toggleFavorite(id);
+        favBtn.innerHTML = added ? '&#9829;' : '&#9825;';
+        favBtn.classList.toggle('is-fav', added);
+      }
+    });
+
+    // --- Expand card for personal data ---
+    document.addEventListener('click', (e) => {
+      const expandBtn = e.target.closest('.card-expand-btn');
+      if (expandBtn) {
+        const id = expandBtn.dataset.expandId;
+        const card = expandBtn.closest('.card');
+        const wasExpanded = card.classList.contains('expanded');
+        card.classList.toggle('expanded');
+        if (!wasExpanded) loadPersonalUI(id, card);
+      }
+    });
+
+    // --- Visit +1 ---
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.visit-add-btn');
+      if (btn) {
+        const id = btn.dataset.visitAdd;
+        const result = window.BadeFood.incrementVisit(id);
+        const countSpan = document.querySelector(`[data-visit-id="${id}"]`);
+        if (countSpan) countSpan.textContent = result.visitCount + ' 次';
+      }
+    });
+
+    // --- My Rating stars ---
+    document.addEventListener('click', (e) => {
+      const starBtn = e.target.closest('.my-rating-stars button');
+      if (starBtn) {
+        const container = starBtn.closest('.my-rating-stars');
+        const id = container.dataset.myratingId;
+        const star = parseInt(starBtn.dataset.star);
+        window.BadeFood.setPersonal(id, { myRating: star });
+        updateStarsUI(container, star);
+      }
+    });
+
+    // --- Personal note ---
+    document.addEventListener('change', (e) => {
+      if (e.target.matches('.personal-note')) {
+        const id = e.target.dataset.noteId;
+        window.BadeFood.setPersonal(id, { note: e.target.value });
+      }
+    });
+
+    // --- Blacklist toggle ---
+    document.addEventListener('change', (e) => {
+      if (e.target.matches('[data-blacklist-id]')) {
+        const id = e.target.dataset.blacklistId;
+        const blacklisted = e.target.checked;
+        window.BadeFood.setPersonal(id, { blacklisted });
+        const card = e.target.closest('.card');
+        card.classList.toggle('blacklisted', blacklisted);
+      }
+    });
+
+    // --- Helpers ---
+    function loadPersonalUI(id, card) {
+      const p = window.BadeFood.getPersonal(id);
+      const visitSpan = card.querySelector(`[data-visit-id="${id}"]`);
+      if (visitSpan) visitSpan.textContent = p.visitCount + ' 次';
+      const starsContainer = card.querySelector(`[data-myrating-id="${id}"]`);
+      if (starsContainer) updateStarsUI(starsContainer, p.myRating);
+      const noteEl = card.querySelector(`[data-note-id="${id}"]`);
+      if (noteEl) noteEl.value = p.note || '';
+      const blEl = card.querySelector(`[data-blacklist-id="${id}"]`);
+      if (blEl) blEl.checked = p.blacklisted;
+    }
+
+    function updateStarsUI(container, rating) {
+      container.querySelectorAll('button').forEach(btn => {
+        btn.classList.toggle('filled', parseInt(btn.dataset.star) <= rating);
+      });
+    }
+
+    // --- Init: restore favorites state ---
+    cards.forEach(card => {
+      const id = card.dataset.id;
+      const favBtn = card.querySelector('.card-fav-btn');
+      if (favBtn && window.BadeFood.isFavorite(id)) {
+        favBtn.innerHTML = '&#9829;';
+        favBtn.classList.add('is-fav');
+      }
+      // Hide blacklisted by default
+      if (window.BadeFood.isBlacklisted(id)) {
+        card.classList.add('blacklisted');
+        card.style.display = 'none';
+      }
+    });
+
+    // Update count after blacklist hiding
+    const visibleCount = cards.filter(c => c.style.display !== 'none').length;
+    countEl.textContent = visibleCount + ' 間餐廳';
+  })();
+  </script>
+</BaseLayout>

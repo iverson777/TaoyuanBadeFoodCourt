@@ -1,0 +1,116 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  category: string[];
+  cuisine: string;
+  priceRange: number;
+  rating: number;
+  reviewCount: number;
+  address: string;
+  googleMapsUrl: string;
+  landmark: string;
+  walkingMinutes: number;
+  tags: string[];
+  hours: string;
+}
+
+const { id, name, category, cuisine, priceRange, rating, reviewCount, address, googleMapsUrl, landmark, walkingMinutes, tags, hours } = Astro.props;
+
+const cuisineLabels: Record<string, string> = {
+  taiwanese: '台式',
+  japanese: '日式',
+  korean: '韓式',
+  chinese: '中式',
+  western: '西式',
+  southeast_asian: '東南亞',
+  hotpot: '火鍋',
+  beverage: '飲料',
+  other: '其他',
+};
+
+const categoryLabels: Record<string, string> = {
+  breakfast: '早餐',
+  lunch: '午餐',
+  dinner: '晚餐',
+  snacks: '小吃',
+};
+
+const priceLabel = '$'.repeat(priceRange);
+const cuisineLabel = cuisineLabels[cuisine] || cuisine;
+---
+
+<div
+  class="card"
+  data-id={id}
+  data-categories={category.join(',')}
+  data-cuisine={cuisine}
+  data-price={priceRange}
+  data-rating={rating}
+  data-walking={walkingMinutes}
+  data-landmark={landmark}
+  data-review-count={reviewCount}
+>
+  <div class="card-header">
+    <div>
+      <div class="card-name">{name}</div>
+      <div class="card-meta">
+        <span class="card-rating">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          {rating}
+        </span>
+        <span class="card-review-count">({reviewCount})</span>
+        <span class="card-price">{priceLabel}</span>
+        <span class="card-walking">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" fill="currentColor"/><path d="M7 21l3-4 2.5 1 3.5-5-2-3-3 1-2 3-3 1"/></svg>
+          {walkingMinutes}分
+        </span>
+      </div>
+    </div>
+    <button class="card-fav-btn" data-fav-id={id} title="收藏" aria-label="收藏">&#9825;</button>
+  </div>
+
+  <div class="card-tags">
+    <span class="card-cuisine-tag">{cuisineLabel}</span>
+    {category.map(c => <span class="card-tag">{categoryLabels[c] || c}</span>)}
+    {tags.map(t => <span class="card-tag">{t}</span>)}
+  </div>
+
+  <div class="card-address">{address}</div>
+  <div class="card-hours">{hours}</div>
+
+  <div class="card-actions">
+    <a class="card-action-btn primary" href={googleMapsUrl} target="_blank" rel="noopener">Google Maps</a>
+    <button class="card-action-btn secondary card-expand-btn" data-expand-id={id}>詳細 / 紀錄</button>
+  </div>
+
+  <div class="card-personal" id={`personal-${id}`}>
+    <div class="personal-row">
+      <span class="personal-label">造訪次數</span>
+      <div class="visit-counter">
+        <span class="visit-count" data-visit-id={id}>0 次</span>
+        <button class="visit-add-btn" data-visit-add={id}>+1</button>
+      </div>
+    </div>
+    <div class="personal-row">
+      <span class="personal-label">私心評價</span>
+      <div class="my-rating-stars" data-myrating-id={id}>
+        <button data-star="1">&#9733;</button>
+        <button data-star="2">&#9733;</button>
+        <button data-star="3">&#9733;</button>
+        <button data-star="4">&#9733;</button>
+        <button data-star="5">&#9733;</button>
+      </div>
+    </div>
+    <div class="personal-row" style="flex-direction:column;align-items:stretch;gap:4px;">
+      <span class="personal-label">備註</span>
+      <textarea class="personal-note" data-note-id={id} rows="2" placeholder="例：必點雞腿飯"></textarea>
+    </div>
+    <div class="personal-row">
+      <span class="personal-label" style="color:var(--color-danger)">不再去</span>
+      <div class="blacklist-toggle">
+        <input type="checkbox" data-blacklist-id={id} />
+      </div>
+    </div>
+  </div>
+</div>

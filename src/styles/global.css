@@ -1,0 +1,553 @@
+/* === Reset & Base === */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-primary: #e8803a;
+  --color-primary-light: #f5a623;
+  --color-secondary: #2a9d8f;
+  --color-secondary-light: #40c9b4;
+  --color-danger: #e63946;
+  --color-warning: #f4a261;
+  --color-bg: #faf7f2;
+  --color-card: #ffffff;
+  --color-text: #2d2a26;
+  --color-text-light: #6b6560;
+  --color-border: #e8e2da;
+  --color-star: #f4a261;
+  --color-heart: #e63946;
+  --color-lucky: #9b59b6;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 50px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --spacing: 1rem;
+  --nav-height: 64px;
+  --max-width: 640px;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  padding-bottom: calc(var(--nav-height) + 16px);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* === Container === */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing);
+}
+
+/* === Page Header === */
+.page-header {
+  padding: 20px var(--spacing) 12px;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.page-header p {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin-top: 4px;
+}
+
+/* === Bottom Navigation === */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: var(--color-card);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.bottom-nav a {
+  flex: 1;
+  max-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 0;
+  color: var(--color-text-light);
+  font-size: 0.7rem;
+  transition: color 0.2s;
+}
+
+.bottom-nav a.active {
+  color: var(--color-primary);
+}
+
+.bottom-nav a svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* === Filter Bar === */
+.filter-section {
+  padding: 8px 0;
+}
+
+.filter-section h3 {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter-pill {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-pill:hover {
+  border-color: var(--color-primary);
+}
+
+.filter-pill.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.filter-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-range input[type="range"] {
+  flex: 1;
+  accent-color: var(--color-primary);
+}
+
+.filter-range span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* === Restaurant Cards === */
+.card-grid {
+  display: grid;
+  gap: 12px;
+  padding: 8px 0 16px;
+}
+
+.card {
+  background: var(--color-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.card-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.card-fav-btn {
+  flex-shrink: 0;
+  font-size: 1.3rem;
+  padding: 2px;
+  color: var(--color-border);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.card-fav-btn.is-fav {
+  color: var(--color-heart);
+}
+
+.card-fav-btn:active {
+  transform: scale(1.3);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--color-star);
+  font-weight: 600;
+}
+
+.card-rating svg {
+  width: 14px;
+  height: 14px;
+}
+
+.card-price {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.card-walking {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.card-walking svg {
+  width: 14px;
+  height: 14px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.card-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-text-light);
+}
+
+.card-cuisine-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-secondary);
+  color: white;
+}
+
+.card-address {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+  margin-top: 8px;
+}
+
+.card-hours {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.card-action-btn {
+  flex: 1;
+  padding: 6px 0;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.card-action-btn.primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.card-action-btn.secondary {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* === Personal Data Panel === */
+.card-personal {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--color-border);
+  display: none;
+}
+
+.card.expanded .card-personal {
+  display: block;
+}
+
+.personal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+.personal-label {
+  color: var(--color-text-light);
+}
+
+.visit-counter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.visit-counter button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.my-rating-stars button {
+  font-size: 1.2rem;
+  color: var(--color-border);
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.my-rating-stars button.filled {
+  color: var(--color-star);
+}
+
+.personal-note {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  resize: none;
+  background: var(--color-bg);
+}
+
+.blacklist-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blacklist-toggle input[type="checkbox"] {
+  accent-color: var(--color-danger);
+  width: 18px;
+  height: 18px;
+}
+
+.card.blacklisted {
+  opacity: 0.5;
+}
+
+/* === Random Picker === */
+.picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.picker-result {
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.picker-result .card {
+  width: 100%;
+  transform: scale(1);
+  animation: none;
+}
+
+.picker-result.spinning .card {
+  animation: cardFlip 0.12s ease-in-out;
+}
+
+@keyframes cardFlip {
+  0% { transform: rotateY(0deg) scale(0.95); opacity: 1; }
+  50% { transform: rotateY(90deg) scale(0.9); opacity: 0.5; }
+  100% { transform: rotateY(0deg) scale(0.95); opacity: 1; }
+}
+
+.picker-btn {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.picker-btn.random {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+}
+
+.picker-btn.lucky {
+  background: linear-gradient(135deg, var(--color-lucky), #c084fc);
+}
+
+.picker-btn:active {
+  transform: scale(0.92);
+  box-shadow: var(--shadow);
+}
+
+.picker-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.picker-filters {
+  width: 100%;
+}
+
+/* === Lucky Badge === */
+.lucky-badge {
+  background: linear-gradient(135deg, var(--color-lucky), #c084fc);
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+
+/* === Empty State === */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-text-light);
+}
+
+.empty-state .icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+}
+
+/* === Sort Bar === */
+.sort-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.8rem;
+}
+
+.sort-bar select {
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.result-count {
+  color: var(--color-text-light);
+}
+
+/* === Utilities === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* === Responsive === */
+@media (min-width: 640px) {
+  :root {
+    --max-width: 720px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
