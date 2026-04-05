@@ -25,22 +25,23 @@
   --radius-pill: 50px;
   --shadow: 0 2px 8px rgba(0,0,0,0.08);
   --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
-  --spacing: 1rem;
-  --nav-height: 64px;
-  --max-width: 640px;
+  --spacing: 12px;
+  --nav-height: 56px;
+  --max-width: 480px;
 }
 
 html {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
   background: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.6;
+  line-height: 1.5;
   -webkit-text-size-adjust: 100%;
+  font-size: 15px;
 }
 
 body {
   min-height: 100dvh;
-  padding-bottom: calc(var(--nav-height) + 16px);
+  padding-bottom: calc(var(--nav-height) + 12px);
 }
 
 a {
@@ -53,6 +54,7 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* === Container === */
@@ -64,20 +66,20 @@ button {
 
 /* === Page Header === */
 .page-header {
-  padding: 20px var(--spacing) 12px;
+  padding: 14px var(--spacing) 8px;
   text-align: center;
 }
 
 .page-header h1 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-text);
 }
 
 .page-header p {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--color-text-light);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* === Bottom Navigation === */
@@ -92,21 +94,20 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0;
   z-index: 100;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 .bottom-nav a {
   flex: 1;
-  max-width: 120px;
+  max-width: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 8px 0;
+  gap: 1px;
+  padding: 6px 0;
   color: var(--color-text-light);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   transition: color 0.2s;
 }
 
@@ -115,32 +116,66 @@ button {
 }
 
 .bottom-nav a svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 }
 
 /* === Filter Bar === */
-.filter-section {
+.filter-bar {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+.filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
   padding: 8px 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.filter-toggle-btn .arrow {
+  transition: transform 0.2s;
+  font-size: 0.7rem;
+}
+
+.filter-toggle-btn.open .arrow {
+  transform: rotate(180deg);
+}
+
+.filter-content {
+  display: none;
+}
+
+.filter-content.open {
+  display: block;
+}
+
+.filter-section {
+  padding: 4px 0;
 }
 
 .filter-section h3 {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--color-text-light);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-weight: 500;
 }
 
 .filter-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
 }
 
 .filter-pill {
-  padding: 6px 14px;
+  padding: 4px 10px;
   border-radius: var(--radius-pill);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   color: var(--color-text);
@@ -161,35 +196,38 @@ button {
 .filter-range {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .filter-range input[type="range"] {
   flex: 1;
   accent-color: var(--color-primary);
+  height: 20px;
 }
 
 .filter-range span {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  min-width: 40px;
+  min-width: 36px;
   text-align: center;
 }
 
 /* === Restaurant Cards === */
 .card-grid {
   display: grid;
-  gap: 12px;
-  padding: 8px 0 16px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 6px 0 16px;
 }
 
 .card {
   background: var(--color-card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 14px;
+  padding: 0;
   transition: transform 0.15s, box-shadow 0.15s;
   position: relative;
+  overflow: hidden;
 }
 
 .card:active {
@@ -198,10 +236,9 @@ button {
 
 /* Card Image */
 .card-image {
-  margin: -14px -14px 12px -14px;
-  border-radius: var(--radius) var(--radius) 0 0;
+  width: 100%;
+  height: 100px;
   overflow: hidden;
-  height: 140px;
 }
 
 .card-image img {
@@ -220,16 +257,20 @@ button {
 }
 
 .card-image-emoji {
-  font-size: 3rem;
+  font-size: 2.2rem;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.card-body {
+  padding: 10px 12px 12px;
 }
 
 /* Card Dishes */
 .card-dishes {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--color-primary);
-  margin-top: 6px;
-  line-height: 1.4;
+  margin-top: 4px;
+  line-height: 1.3;
 }
 
 .card-dishes-label {
@@ -240,18 +281,18 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
 .card-name {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.3;
 }
 
 .card-fav-btn {
   flex-shrink: 0;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   padding: 2px;
   color: var(--color-border);
   transition: color 0.2s, transform 0.2s;
@@ -268,23 +309,24 @@ button {
 .card-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 6px;
-  font-size: 0.8rem;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.72rem;
   color: var(--color-text-light);
 }
 
 .card-rating {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   color: var(--color-star);
   font-weight: 600;
 }
 
 .card-rating svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .card-price {
@@ -299,49 +341,49 @@ button {
 }
 
 .card-walking svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
+  gap: 3px;
+  margin-top: 6px;
 }
 
 .card-tag {
-  font-size: 0.7rem;
-  padding: 2px 8px;
+  font-size: 0.65rem;
+  padding: 1px 7px;
   border-radius: var(--radius-pill);
   background: var(--color-bg);
   color: var(--color-text-light);
 }
 
 .card-cuisine-tag {
-  font-size: 0.7rem;
-  padding: 2px 8px;
+  font-size: 0.65rem;
+  padding: 1px 7px;
   border-radius: var(--radius-pill);
   background: var(--color-secondary);
   color: white;
 }
 
 .card-address {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--color-text-light);
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .card-hours {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--color-text-light);
 }
 
 .card-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
-  padding-top: 10px;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid var(--color-border);
 }
 
@@ -349,7 +391,7 @@ button {
   flex: 1;
   padding: 6px 0;
   border-radius: var(--radius-sm);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-align: center;
   transition: background 0.2s;
 }
@@ -366,8 +408,8 @@ button {
 
 /* === Personal Data Panel === */
 .card-personal {
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px dashed var(--color-border);
   display: none;
 }
@@ -380,8 +422,8 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.8rem;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
 }
 
 .personal-label {
@@ -395,12 +437,12 @@ button {
 }
 
 .visit-counter button {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--color-primary);
   color: white;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -413,7 +455,7 @@ button {
 }
 
 .my-rating-stars button {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--color-border);
   padding: 0;
   transition: color 0.15s;
@@ -428,7 +470,7 @@ button {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 6px 10px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-family: inherit;
   resize: none;
   background: var(--color-bg);
@@ -455,13 +497,13 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 20px 0;
+  gap: 16px;
+  padding: 16px 0;
 }
 
 .picker-result {
   width: 100%;
-  min-height: 200px;
+  min-height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -484,10 +526,10 @@ button {
 }
 
 .picker-btn {
-  width: 140px;
-  height: 140px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 700;
   color: white;
   box-shadow: var(--shadow-lg);
@@ -509,7 +551,7 @@ button {
 
 .picker-buttons {
   display: flex;
-  gap: 20px;
+  gap: 16px;
 }
 
 .picker-filters {
@@ -520,7 +562,7 @@ button {
 .lucky-badge {
   background: linear-gradient(135deg, var(--color-lucky), #c084fc);
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   font-weight: 600;
@@ -529,17 +571,17 @@ button {
 /* === Empty State === */
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 40px 20px;
   color: var(--color-text-light);
 }
 
 .empty-state .icon {
-  font-size: 3rem;
-  margin-bottom: 12px;
+  font-size: 2.5rem;
+  margin-bottom: 8px;
 }
 
 .empty-state p {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 /* === Sort Bar === */
@@ -547,8 +589,8 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
-  font-size: 0.8rem;
+  padding: 6px 0;
+  font-size: 0.75rem;
 }
 
 .sort-bar select {
@@ -556,7 +598,7 @@ button {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-card);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-family: inherit;
 }
 
@@ -582,12 +624,37 @@ button {
 }
 
 /* === Responsive === */
+@media (min-width: 480px) {
+  :root {
+    --max-width: 520px;
+    --spacing: 16px;
+  }
+
+  .card-image {
+    height: 120px;
+  }
+}
+
 @media (min-width: 640px) {
   :root {
     --max-width: 720px;
   }
 
+  html {
+    font-size: 16px;
+  }
+
   .card-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-image {
+    height: 140px;
+  }
+
+  .picker-btn {
+    width: 140px;
+    height: 140px;
+    font-size: 1.2rem;
   }
 }

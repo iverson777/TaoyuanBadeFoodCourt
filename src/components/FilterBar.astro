@@ -1,70 +1,82 @@
 ---
-// FilterBar renders all filter controls, JS handles toggling
+// FilterBar with collapsible toggle for mobile
 ---
 
 <div class="filter-bar container">
-  <!-- 用餐時段 -->
-  <div class="filter-section">
-    <h3>用餐時段</h3>
-    <div class="filter-pills" data-filter-group="category">
-      <button class="filter-pill" data-value="breakfast">早餐</button>
-      <button class="filter-pill" data-value="lunch">午餐</button>
-      <button class="filter-pill" data-value="dinner">晚餐</button>
-      <button class="filter-pill" data-value="snacks">小吃</button>
-    </div>
-  </div>
+  <button class="filter-toggle-btn" id="filter-toggle">
+    <span>篩選條件</span>
+    <span class="arrow">&#9660;</span>
+  </button>
 
-  <!-- 料理類型 -->
-  <div class="filter-section">
-    <h3>料理類型</h3>
-    <div class="filter-pills" data-filter-group="cuisine">
-      <button class="filter-pill" data-value="taiwanese">台式</button>
-      <button class="filter-pill" data-value="japanese">日式</button>
-      <button class="filter-pill" data-value="korean">韓式</button>
-      <button class="filter-pill" data-value="chinese">中式</button>
-      <button class="filter-pill" data-value="western">西式</button>
-      <button class="filter-pill" data-value="southeast_asian">東南亞</button>
-      <button class="filter-pill" data-value="hotpot">火鍋</button>
-      <button class="filter-pill" data-value="beverage">飲料</button>
+  <div class="filter-content" id="filter-content">
+    <div class="filter-section">
+      <h3>用餐時段</h3>
+      <div class="filter-pills" data-filter-group="category">
+        <button class="filter-pill" data-value="breakfast">早餐</button>
+        <button class="filter-pill" data-value="lunch">午餐</button>
+        <button class="filter-pill" data-value="dinner">晚餐</button>
+        <button class="filter-pill" data-value="snacks">小吃</button>
+      </div>
     </div>
-  </div>
 
-  <!-- 價位 -->
-  <div class="filter-section">
-    <h3>價位</h3>
-    <div class="filter-pills" data-filter-group="price">
-      <button class="filter-pill" data-value="1">$ 平價</button>
-      <button class="filter-pill" data-value="2">$$ 中等</button>
-      <button class="filter-pill" data-value="3">$$$ 高價</button>
+    <div class="filter-section">
+      <h3>料理類型</h3>
+      <div class="filter-pills" data-filter-group="cuisine">
+        <button class="filter-pill" data-value="taiwanese">台式</button>
+        <button class="filter-pill" data-value="japanese">日式</button>
+        <button class="filter-pill" data-value="korean">韓式</button>
+        <button class="filter-pill" data-value="chinese">中式</button>
+        <button class="filter-pill" data-value="western">西式</button>
+        <button class="filter-pill" data-value="southeast_asian">東南亞</button>
+        <button class="filter-pill" data-value="hotpot">火鍋</button>
+        <button class="filter-pill" data-value="beverage">飲料</button>
+      </div>
     </div>
-  </div>
 
-  <!-- 評分門檻 -->
-  <div class="filter-section">
-    <h3>最低評分</h3>
-    <div class="filter-range">
-      <input type="range" id="rating-filter" min="0" max="5" step="0.5" value="0" />
-      <span id="rating-filter-value">不限</span>
+    <div class="filter-section">
+      <h3>價位</h3>
+      <div class="filter-pills" data-filter-group="price">
+        <button class="filter-pill" data-value="1">$ 平價</button>
+        <button class="filter-pill" data-value="2">$$ 中等</button>
+        <button class="filter-pill" data-value="3">$$$ 高價</button>
+      </div>
     </div>
-  </div>
 
-  <!-- 步行距離 -->
-  <div class="filter-section">
-    <h3>步行距離</h3>
-    <div class="filter-pills" data-filter-group="walking">
-      <button class="filter-pill" data-value="5">5分鐘內</button>
-      <button class="filter-pill" data-value="10">10分鐘內</button>
-      <button class="filter-pill" data-value="15">15分鐘內</button>
+    <div class="filter-section">
+      <h3>最低評分</h3>
+      <div class="filter-range">
+        <input type="range" id="rating-filter" min="0" max="5" step="0.5" value="0" />
+        <span id="rating-filter-value">不限</span>
+      </div>
     </div>
-  </div>
 
-  <!-- 個人篩選 -->
-  <div class="filter-section">
-    <h3>個人紀錄</h3>
-    <div class="filter-pills" data-filter-group="personal">
-      <button class="filter-pill" data-value="visited">去過的</button>
-      <button class="filter-pill" data-value="unvisited">沒去過的</button>
-      <button class="filter-pill" data-value="show-blacklisted">顯示黑名單</button>
+    <div class="filter-section">
+      <h3>步行距離</h3>
+      <div class="filter-pills" data-filter-group="walking">
+        <button class="filter-pill" data-value="5">5分鐘</button>
+        <button class="filter-pill" data-value="10">10分鐘</button>
+        <button class="filter-pill" data-value="15">15分鐘</button>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <h3>個人紀錄</h3>
+      <div class="filter-pills" data-filter-group="personal">
+        <button class="filter-pill" data-value="visited">去過的</button>
+        <button class="filter-pill" data-value="unvisited">沒去過的</button>
+        <button class="filter-pill" data-value="show-blacklisted">黑名單</button>
+      </div>
     </div>
   </div>
 </div>
+
+<script is:inline>
+  const toggleBtn = document.getElementById('filter-toggle');
+  const content = document.getElementById('filter-content');
+  if (toggleBtn && content) {
+    toggleBtn.addEventListener('click', () => {
+      toggleBtn.classList.toggle('open');
+      content.classList.toggle('open');
+    });
+  }
+</script>
