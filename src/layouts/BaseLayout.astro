@@ -67,6 +67,36 @@ const base = import.meta.env.BASE_URL;
 
       isBlacklisted(id) {
         return this.getPersonal(id).blacklisted;
+      },
+
+      // === Custom Restaurants (user-added via Google Places) ===
+      CUSTOM_KEY: 'bade-food-custom',
+
+      getCustomRestaurants() {
+        try { return JSON.parse(localStorage.getItem(this.CUSTOM_KEY)) || []; }
+        catch { return []; }
+      },
+
+      addCustomRestaurant(restaurant) {
+        var customs = this.getCustomRestaurants();
+        if (customs.some(function(r) { return r.id === restaurant.id; })) return false;
+        customs.push(restaurant);
+        localStorage.setItem(this.CUSTOM_KEY, JSON.stringify(customs));
+        return true;
+      },
+
+      removeCustomRestaurant(id) {
+        var customs = this.getCustomRestaurants().filter(function(r) { return r.id !== id; });
+        localStorage.setItem(this.CUSTOM_KEY, JSON.stringify(customs));
+        var favs = this.getFavorites().filter(function(f) { return f !== id; });
+        localStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favs));
+        var personal = this.getPersonalData();
+        delete personal[id];
+        localStorage.setItem(this.PERSONAL_KEY, JSON.stringify(personal));
+      },
+
+      isCustom(id) {
+        return id && id.indexOf('custom-') === 0;
       }
     };
   </script>

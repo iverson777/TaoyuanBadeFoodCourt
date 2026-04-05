@@ -51,6 +51,13 @@ import data from '../data/restaurants.json';
     function initMap() {
       try {
       var restaurants = JSON.parse(document.getElementById('map-data').textContent);
+      // Merge custom restaurants from localStorage
+      var customs = window.BadeFood.getCustomRestaurants();
+      customs.forEach(function(r) {
+        if (r.lat && r.lng && !restaurants.some(function(s) { return s.id === r.id; })) {
+          restaurants.push(r);
+        }
+      });
       var center = { lat: 24.9510, lng: 121.2850 };
 
       var map = new google.maps.Map(document.getElementById('map'), {

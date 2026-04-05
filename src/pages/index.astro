@@ -42,6 +42,25 @@ const restaurants = data.restaurants.sort((a, b) => b.rating - a.rating);
     </div>
   </div>
 
+  <!-- FAB: Add Restaurant -->
+  <button class="fab" id="fab-add" title="搜尋新增餐廳" aria-label="搜尋新增餐廳">＋</button>
+
+  <!-- Search Modal -->
+  <div class="search-modal-overlay" id="search-overlay">
+    <div class="search-modal">
+      <div class="search-modal-header">
+        <h2>搜尋餐廳</h2>
+        <button class="search-modal-close" id="search-close" aria-label="關閉">&times;</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="search-input" placeholder="輸入餐廳名稱或關鍵字..." autocomplete="off" />
+      </div>
+      <div class="search-results" id="search-results">
+        <div style="text-align:center;color:var(--color-text-light);padding:24px 0;font-size:0.85rem;">輸入關鍵字搜尋 Google 地圖上的餐廳</div>
+      </div>
+    </div>
+  </div>
+
   <script is:inline>
   (function() {
     const grid = document.getElementById('card-grid');
@@ -277,6 +296,232 @@ const restaurants = data.restaurants.sort((a, b) => b.rating - a.rating);
     // Update count after blacklist hiding
     const visibleCount = cards.filter(c => c.style.display !== 'none').length;
     countEl.textContent = visibleCount + ' 間餐廳';
+
+    // === Merge custom restaurants on load ===
+    function injectCustomCards() {
+      var customs = window.BadeFood.getCustomRestaurants();
+      customs.forEach(function(r) {
+        if (grid.querySelector('[data-id="' + r.id + '"]')) return;
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.id = r.id;
+        card.dataset.categories = (r.category || []).join(',');
+        card.dataset.cuisine = r.cuisine || 'other';
+        card.dataset.price = r.priceRange || 2;
+        card.dataset.rating = r.rating || 0;
+        card.dataset.walking = r.walkingMinutes || 10;
+        card.dataset.landmark = r.landmark || 'other';
+        card.dataset.reviewCount = r.reviewCount || 0;
+
+        var imgHtml = r.image
+          ? '<div class="card-image"><img src="' + r.image + '" alt="' + r.name + '" loading="lazy" /></div>'
+          : '<div class="card-image"><div class="card-image-placeholder"><span class="card-image-emoji">🍽️</span></div></div>';
+
+        var price = '$'.repeat(r.priceRange || 2);
+        var isFav = window.BadeFood.isFavorite(r.id);
+
+        card.innerHTML = imgHtml +
+          '<div class="card-body">' +
+            '<div class="card-header"><div>' +
+              '<div class="card-name"><span class="card-custom-badge">自訂</span> ' + r.name + '</div>' +
+              '<div class="card-meta">' +
+                '<span class="card-rating"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ' + (r.rating || '-') + '</span>' +
+                '<span>(' + (r.reviewCount || 0) + ')</span>' +
+                '<span class="card-price">' + price + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<button class="card-fav-btn' + (isFav ? ' is-fav' : '') + '" data-fav-id="' + r.id + '" title="收藏">' + (isFav ? '&#9829;' : '&#9825;') + '</button>' +
+          '</div>' +
+          '<div class="card-tags"><span class="card-cuisine-tag">' + (r.cuisineLabel || '其他') + '</span></div>' +
+          '<div class="card-address">' + (r.address || '') + '</div>' +
+          '<div class="card-actions">' +
+            '<a class="card-action-btn primary" href="' + (r.googleMapsUrl || '#') + '" target="_blank" rel="noopener">Google Maps</a>' +
+            '<button class="card-action-btn secondary" onclick="window.BadeFood.removeCustomRestaurant(\'' + r.id + '\');this.closest(\'.card\').remove();" style="color:var(--color-danger);">移除</button>' +
+          '</div></div>';
+
+        grid.prepend(card);
+        cards.push(card);
+      });
+    }
+    injectCustomCards();
+  })();
+  </script>
+
+  <!-- Search & Add Restaurant Script -->
+  <script is:inline>
+  (function() {
+    var fab = document.getElementById('fab-add');
+    var overlay = document.getElementById('search-overlay');
+    var closeBtn = document.getElementById('search-close');
+    var input = document.getElementById('search-input');
+    var resultsEl = document.getElementById('search-results');
+    var placesService = null;
+    var mapsLoaded = false;
+    var searchTimeout = null;
+
+    // Open modal
+    fab.addEventListener('click', function() {
+      overlay.classList.add('open');
+      input.focus();
+      if (!mapsLoaded) loadPlacesAPI();
+    });
+
+    // Close modal
+    closeBtn.addEventListener('click', function() { overlay.classList.remove('open'); });
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+
+    // Load Places API
+    function loadPlacesAPI() {
+      if (mapsLoaded) return;
+      if (window.google && window.google.maps && window.google.maps.places) {
+        mapsLoaded = true;
+        placesService = new google.maps.places.PlacesService(document.createElement('div'));
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAQSkrYp-4i8rwj6g_atgi1-_1Lv3ZrJOU&libraries=places';
+      s.onload = function() {
+        mapsLoaded = true;
+        placesService = new google.maps.places.PlacesService(document.createElement('div'));
+      };
+      document.head.appendChild(s);
+    }
+
+    // Debounced search
+    input.addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      var q = input.value.trim();
+      if (q.length < 2) {
+        resultsEl.innerHTML = '<div style="text-align:center;color:var(--color-text-light);padding:24px 0;font-size:0.85rem;">輸入關鍵字搜尋 Google 地圖上的餐廳</div>';
+        return;
+      }
+      searchTimeout = setTimeout(function() { doSearch(q); }, 400);
+    });
+
+    function doSearch(query) {
+      if (!placesService) {
+        resultsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--color-text-light);">Google Places 載入中...</div>';
+        return;
+      }
+
+      resultsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--color-text-light);">搜尋中...</div>';
+
+      var request = {
+        query: query + ' 桃園八德',
+        location: new google.maps.LatLng(24.951, 121.285),
+        radius: 3000,
+        type: 'restaurant'
+      };
+
+      placesService.textSearch(request, function(results, status) {
+        if (status !== google.maps.places.PlacesServiceStatus.OK || !results.length) {
+          resultsEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--color-text-light);">找不到結果，試試其他關鍵字</div>';
+          return;
+        }
+
+        resultsEl.innerHTML = '';
+        results.slice(0, 10).forEach(function(place) {
+          var customId = 'custom-' + place.place_id;
+          var alreadyAdded = window.BadeFood.getCustomRestaurants().some(function(r) { return r.id === customId; });
+          var existsStatic = document.querySelector('[data-id="' + customId + '"]') ||
+                             document.querySelector('[data-id="' + place.place_id + '"]');
+
+          var photoUrl = '';
+          if (place.photos && place.photos.length > 0) {
+            photoUrl = place.photos[0].getUrl({ maxWidth: 600 });
+          }
+
+          var item = document.createElement('div');
+          item.className = 'search-result-item';
+
+          var photoHtml = photoUrl
+            ? '<div class="search-result-photo"><img src="' + photoUrl + '" alt="" /></div>'
+            : '<div class="search-result-photo"><span style="font-size:24px;">🍽️</span></div>';
+
+          var ratingText = place.rating ? '⭐ ' + place.rating + ' (' + (place.user_ratings_total || 0) + ')' : '無評分';
+          var addr = (place.formatted_address || '').replace('台灣', '').replace(/^\d+/, '').trim();
+
+          item.innerHTML = photoHtml +
+            '<div class="search-result-info">' +
+              '<div class="search-result-name">' + place.name + '</div>' +
+              '<div class="search-result-meta">' + ratingText + '</div>' +
+              '<div class="search-result-addr">' + addr + '</div>' +
+            '</div>' +
+            '<button class="search-add-btn" ' + (alreadyAdded || existsStatic ? 'disabled style="opacity:0.5;"' : '') + '>' +
+              (alreadyAdded || existsStatic ? '已加' : '加入') +
+            '</button>';
+
+          if (!alreadyAdded && !existsStatic) {
+            item.querySelector('.search-add-btn').addEventListener('click', function() {
+              var restaurant = {
+                id: customId,
+                name: place.name,
+                category: ['lunch', 'dinner'],
+                cuisine: 'other',
+                cuisineLabel: '其他',
+                priceRange: 2,
+                rating: place.rating || 0,
+                reviewCount: place.user_ratings_total || 0,
+                address: addr,
+                googleMapsUrl: 'https://www.google.com/maps/place/?q=place_id:' + place.place_id,
+                landmark: 'other',
+                walkingMinutes: 10,
+                tags: [],
+                hours: '',
+                image: photoUrl || null,
+                dishes: [],
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+              };
+
+              window.BadeFood.addCustomRestaurant(restaurant);
+              this.textContent = '已加';
+              this.disabled = true;
+              this.style.opacity = '0.5';
+
+              // Inject card into grid
+              var grid = document.getElementById('card-grid');
+              var card = document.createElement('div');
+              card.className = 'card';
+              card.dataset.id = restaurant.id;
+              card.dataset.categories = restaurant.category.join(',');
+              card.dataset.cuisine = restaurant.cuisine;
+              card.dataset.price = restaurant.priceRange;
+              card.dataset.rating = restaurant.rating;
+              card.dataset.walking = restaurant.walkingMinutes;
+              card.dataset.landmark = restaurant.landmark;
+              card.dataset.reviewCount = restaurant.reviewCount;
+
+              var imgHtml = restaurant.image
+                ? '<div class="card-image"><img src="' + restaurant.image + '" alt="' + restaurant.name + '" loading="lazy" /></div>'
+                : '<div class="card-image"><div class="card-image-placeholder"><span class="card-image-emoji">🍽️</span></div></div>';
+
+              card.innerHTML = imgHtml +
+                '<div class="card-body"><div class="card-header"><div>' +
+                  '<div class="card-name"><span class="card-custom-badge">自訂</span> ' + restaurant.name + '</div>' +
+                  '<div class="card-meta"><span class="card-rating"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ' + restaurant.rating + '</span>' +
+                  '<span>(' + restaurant.reviewCount + ')</span>' +
+                  '<span class="card-price">' + '$$' + '</span></div>' +
+                '</div>' +
+                '<button class="card-fav-btn" data-fav-id="' + restaurant.id + '" title="收藏">&#9825;</button>' +
+                '</div>' +
+                '<div class="card-tags"><span class="card-cuisine-tag">其他</span></div>' +
+                '<div class="card-address">' + restaurant.address + '</div>' +
+                '<div class="card-actions">' +
+                  '<a class="card-action-btn primary" href="' + restaurant.googleMapsUrl + '" target="_blank" rel="noopener">Google Maps</a>' +
+                  '<button class="card-action-btn secondary" onclick="window.BadeFood.removeCustomRestaurant(\'' + restaurant.id + '\');this.closest(\'.card\').remove();" style="color:var(--color-danger);">移除</button>' +
+                '</div></div>';
+
+              grid.prepend(card);
+            });
+          }
+
+          resultsEl.appendChild(item);
+        });
+      });
+    }
   })();
   </script>
 </BaseLayout>

@@ -81,6 +81,11 @@ const cuisineEmojis: Record<string, string> = {
   <script is:inline define:vars={{ cuisineLabels, categoryLabels, cuisineEmojis }}>
   (function() {
     const allData = JSON.parse(document.getElementById('restaurant-data').textContent);
+    // Merge custom restaurants from localStorage
+    var customs = window.BadeFood.getCustomRestaurants();
+    customs.forEach(function(r) {
+      if (!allData.some(function(s) { return s.id === r.id; })) allData.push(r);
+    });
     const resultEl = document.getElementById('picker-result');
     const randomBtn = document.getElementById('random-btn');
     const luckyBtn = document.getElementById('lucky-btn');
