@@ -196,6 +196,46 @@ button {
   transform: scale(0.98);
 }
 
+/* Card Image */
+.card-image {
+  margin: -14px -14px 12px -14px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  overflow: hidden;
+  height: 140px;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f8e8d4 0%, #e8d4c0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-image-emoji {
+  font-size: 3rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Card Dishes */
+.card-dishes {
+  font-size: 0.78rem;
+  color: var(--color-primary);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.card-dishes-label {
+  font-weight: 600;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;

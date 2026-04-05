@@ -14,7 +14,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 5,
       "tags": ["漢堡", "早午餐", "速食"],
-      "hours": "06:00-14:00"
+      "hours": "06:00-14:00",
+      "image": null,
+      "dishes": ["花生牛肉堡", "脆雞堡", "薯餅蛋餅"]
     },
     {
       "id": "chicken-soup-uncle",
@@ -29,7 +31,9 @@
       "landmark": "yiyong",
       "walkingMinutes": 8,
       "tags": ["雞湯", "定食", "家常菜"],
-      "hours": "11:00-14:00, 17:00-21:00"
+      "hours": "11:00-14:00, 17:00-21:00",
+      "image": null,
+      "dishes": ["招牌雞湯", "雞腿定食", "麻油雞飯"]
     },
     {
       "id": "qian-du-hotpot",
@@ -44,7 +48,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 6,
       "tags": ["火鍋", "涮涮鍋", "平價"],
-      "hours": "11:00-22:00"
+      "hours": "11:00-22:00",
+      "image": null,
+      "dishes": ["豬肉涮涮鍋", "海鮮鍋", "牛肉鍋"]
     },
     {
       "id": "mei-er-mei-bade",
@@ -59,7 +65,9 @@
       "landmark": "danan",
       "walkingMinutes": 10,
       "tags": ["早餐", "三明治", "蛋餅"],
-      "hours": "05:30-11:00"
+      "hours": "05:30-11:00",
+      "image": null,
+      "dishes": ["總匯三明治", "原味蛋餅", "鮪魚吐司"]
     },
     {
       "id": "sushi-express-bade",
@@ -74,7 +82,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 3,
       "tags": ["壽司", "迴轉壽司", "日料"],
-      "hours": "11:00-21:30"
+      "hours": "11:00-21:30",
+      "image": null,
+      "dishes": ["鮭魚壽司", "炙燒鮪魚", "味噌湯"]
     },
     {
       "id": "danan-beef-noodle",
@@ -89,7 +99,9 @@
       "landmark": "danan",
       "walkingMinutes": 12,
       "tags": ["牛肉麵", "麵食", "小吃"],
-      "hours": "10:30-20:00"
+      "hours": "10:30-20:00",
+      "image": null,
+      "dishes": ["紅燒牛肉麵", "清燉牛肉麵", "小菜拼盤"]
     },
     {
       "id": "korean-kimchi-house",
@@ -104,7 +116,9 @@
       "landmark": "yiyong",
       "walkingMinutes": 7,
       "tags": ["韓式", "石鍋拌飯", "韓式炸雞"],
-      "hours": "11:00-14:00, 17:00-21:00"
+      "hours": "11:00-14:00, 17:00-21:00",
+      "image": null,
+      "dishes": ["石鍋拌飯", "韓式炸雞", "豆腐鍋"]
     },
     {
       "id": "fifty-lan-bade",
@@ -119,7 +133,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 4,
       "tags": ["飲料", "手搖", "茶飲"],
-      "hours": "09:00-22:00"
+      "hours": "09:00-22:00",
+      "image": null,
+      "dishes": ["四季春茶", "波霸奶茶", "檸檬綠茶"]
     },
     {
       "id": "pepper-lunch-bade",
@@ -134,7 +150,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 3,
       "tags": ["鐵板", "牛排", "丼飯"],
-      "hours": "11:00-21:30"
+      "hours": "11:00-21:30",
+      "image": null,
+      "dishes": ["胡椒牛排", "照燒雞腿", "咖哩牛肉飯"]
     },
     {
       "id": "bade-braised-pork",
@@ -149,7 +167,9 @@
       "landmark": "danan",
       "walkingMinutes": 11,
       "tags": ["滷肉飯", "小吃", "銅板美食"],
-      "hours": "06:30-14:00"
+      "hours": "06:30-14:00",
+      "image": null,
+      "dishes": ["招牌滷肉飯", "滷蛋", "筍絲湯"]
     },
     {
       "id": "pho-vietnam-bade",
@@ -164,7 +184,9 @@
       "landmark": "yiyong",
       "walkingMinutes": 9,
       "tags": ["越南", "河粉", "春捲"],
-      "hours": "11:00-21:00"
+      "hours": "11:00-21:00",
+      "image": null,
+      "dishes": ["牛肉河粉", "越式春捲", "法國麵包"]
     },
     {
       "id": "mcdonalds-bade",
@@ -179,7 +201,9 @@
       "landmark": "other",
       "walkingMinutes": 15,
       "tags": ["速食", "漢堡", "薯條"],
-      "hours": "06:00-00:00"
+      "hours": "06:00-00:00",
+      "image": null,
+      "dishes": ["大麥克", "麥克雞塊", "薯條"]
     },
     {
       "id": "danan-oyster-omelet",
@@ -194,7 +218,9 @@
       "landmark": "danan",
       "walkingMinutes": 12,
       "tags": ["蚵仔煎", "夜市", "小吃"],
-      "hours": "16:00-22:00"
+      "hours": "16:00-22:00",
+      "image": null,
+      "dishes": ["蚵仔煎", "蝦仁煎", "花枝煎"]
     },
     {
       "id": "saizeriya-guangfeng",
@@ -209,7 +235,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 3,
       "tags": ["義大利麵", "披薩", "平價西餐"],
-      "hours": "11:00-22:00"
+      "hours": "11:00-22:00",
+      "image": null,
+      "dishes": ["明太子義大利麵", "瑪格麗特披薩", "焗烤飯"]
     },
     {
       "id": "yiyong-breakfast-king",
@@ -224,7 +252,9 @@
       "landmark": "yiyong",
       "walkingMinutes": 6,
       "tags": ["早餐", "蛋餅", "豆漿"],
-      "hours": "05:00-11:30"
+      "hours": "05:00-11:30",
+      "image": null,
+      "dishes": ["手工蛋餅", "鹹豆漿", "飯糰"]
     },
     {
       "id": "sukiya-bade",
@@ -239,7 +269,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 5,
       "tags": ["丼飯", "牛丼", "日式速食"],
-      "hours": "07:00-00:00"
+      "hours": "07:00-00:00",
+      "image": null,
+      "dishes": ["牛丼", "咖哩飯", "鰻魚丼"]
     },
     {
       "id": "starbucks-guangfeng",
@@ -254,7 +286,9 @@
       "landmark": "guangfeng",
       "walkingMinutes": 3,
       "tags": ["咖啡", "甜點", "輕食"],
-      "hours": "08:00-22:00"
+      "hours": "08:00-22:00",
+      "image": null,
+      "dishes": ["拿鐵", "星冰樂", "可頌"]
     },
     {
       "id": "danan-fried-chicken",
@@ -269,7 +303,9 @@
       "landmark": "danan",
       "walkingMinutes": 11,
       "tags": ["鹹酥雞", "炸物", "宵夜"],
-      "hours": "15:00-23:00"
+      "hours": "15:00-23:00",
+      "image": null,
+      "dishes": ["鹹酥雞", "炸魷魚", "地瓜薯條"]
     }
   ]
 }

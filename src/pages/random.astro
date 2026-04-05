@@ -9,6 +9,10 @@ const cuisineLabels: Record<string, string> = {
 const categoryLabels: Record<string, string> = {
   breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snacks: '小吃',
 };
+const cuisineEmojis: Record<string, string> = {
+  taiwanese: '🍚', japanese: '🍣', korean: '🥘', chinese: '🥟',
+  western: '🍔', southeast_asian: '🍜', hotpot: '🫕', beverage: '🧋', other: '🍽️',
+};
 ---
 
 <BaseLayout title="隨機選餐廳 | 八德美食" activePage="random">
@@ -74,7 +78,7 @@ const categoryLabels: Record<string, string> = {
   <!-- Embed restaurant data for client-side use -->
   <script type="application/json" id="restaurant-data" set:html={JSON.stringify(data.restaurants)} />
 
-  <script is:inline define:vars={{ cuisineLabels, categoryLabels }}>
+  <script is:inline define:vars={{ cuisineLabels, categoryLabels, cuisineEmojis }}>
   (function() {
     const allData = JSON.parse(document.getElementById('restaurant-data').textContent);
     const resultEl = document.getElementById('picker-result');
@@ -137,9 +141,18 @@ const categoryLabels: Record<string, string> = {
       const personal = window.BadeFood.getPersonal(r.id);
       const isFav = window.BadeFood.isFavorite(r.id);
 
+      const emoji = cuisineEmojis[r.cuisine] || '🍽️';
+      const imageHtml = r.image
+        ? `<div class="card-image"><img src="${r.image}" alt="${r.name}" loading="lazy" /></div>`
+        : `<div class="card-image"><div class="card-image-placeholder"><span class="card-image-emoji">${emoji}</span></div></div>`;
+      const dishesHtml = r.dishes && r.dishes.length > 0
+        ? `<div class="card-dishes"><span class="card-dishes-label">招牌：</span>${r.dishes.join(' / ')}</div>`
+        : '';
+
       resultEl.innerHTML = `
         <div class="card" style="width:100%">
-          ${isLucky ? '<span class="lucky-badge" style="position:absolute;top:10px;right:10px;">Lucky!</span>' : ''}
+          ${isLucky ? '<span class="lucky-badge" style="position:absolute;top:10px;right:10px;z-index:1;">Lucky!</span>' : ''}
+          ${imageHtml}
           <div class="card-header">
             <div>
               <div class="card-name">${r.name}</div>
@@ -159,6 +172,7 @@ const categoryLabels: Record<string, string> = {
             ${catLabels.map(c => `<span class="card-tag">${c}</span>`).join('')}
             ${r.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
           </div>
+          ${dishesHtml}
           <div class="card-address">${r.address}</div>
           <div class="card-hours">${r.hours}</div>
           ${personal.visitCount > 0 ? `<div style="font-size:0.8rem;color:var(--color-text-light);margin-top:6px;">已造訪 ${personal.visitCount} 次${personal.myRating ? ' | 私心 ' + '★'.repeat(personal.myRating) : ''}</div>` : ''}

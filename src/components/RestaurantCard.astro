@@ -13,9 +13,11 @@ interface Props {
   walkingMinutes: number;
   tags: string[];
   hours: string;
+  image: string | null;
+  dishes: string[];
 }
 
-const { id, name, category, cuisine, priceRange, rating, reviewCount, address, googleMapsUrl, landmark, walkingMinutes, tags, hours } = Astro.props;
+const { id, name, category, cuisine, priceRange, rating, reviewCount, address, googleMapsUrl, landmark, walkingMinutes, tags, hours, image, dishes } = Astro.props;
 
 const cuisineLabels: Record<string, string> = {
   taiwanese: '台式',
@@ -38,6 +40,12 @@ const categoryLabels: Record<string, string> = {
 
 const priceLabel = '$'.repeat(priceRange);
 const cuisineLabel = cuisineLabels[cuisine] || cuisine;
+
+const cuisineEmojis: Record<string, string> = {
+  taiwanese: '🍚', japanese: '🍣', korean: '🥘', chinese: '🥟',
+  western: '🍔', southeast_asian: '🍜', hotpot: '🫕', beverage: '🧋', other: '🍽️',
+};
+const emoji = cuisineEmojis[cuisine] || '🍽️';
 ---
 
 <div
@@ -51,6 +59,17 @@ const cuisineLabel = cuisineLabels[cuisine] || cuisine;
   data-landmark={landmark}
   data-review-count={reviewCount}
 >
+  <!-- 餐廳圖片 -->
+  <div class="card-image">
+    {image ? (
+      <img src={image} alt={name} loading="lazy" />
+    ) : (
+      <div class="card-image-placeholder">
+        <span class="card-image-emoji">{emoji}</span>
+      </div>
+    )}
+  </div>
+
   <div class="card-header">
     <div>
       <div class="card-name">{name}</div>
@@ -75,6 +94,14 @@ const cuisineLabel = cuisineLabels[cuisine] || cuisine;
     {category.map(c => <span class="card-tag">{categoryLabels[c] || c}</span>)}
     {tags.map(t => <span class="card-tag">{t}</span>)}
   </div>
+
+  <!-- 招牌菜色 -->
+  {dishes.length > 0 && (
+    <div class="card-dishes">
+      <span class="card-dishes-label">招牌：</span>
+      {dishes.join(' / ')}
+    </div>
+  )}
 
   <div class="card-address">{address}</div>
   <div class="card-hours">{hours}</div>
