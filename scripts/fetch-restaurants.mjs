@@ -25,35 +25,57 @@ const FORCE = process.argv.includes('--force');
 const PHOTOS_ONLY = process.argv.includes('--photos-only');
 const HOURS_ONLY = process.argv.includes('--hours-only');
 
-// 八德區中心座標
-const BADE_CENTER = { lat: 24.9530, lng: 121.2850 };
-const SEARCH_RADIUS = 2000; // 2km
+// 多個搜尋中心點，覆蓋八德主要區域
+const SEARCH_CENTERS = [
+  { name: '廣豐/永福', lat: 24.9460, lng: 121.2880 },
+  { name: '大湳市場', lat: 24.9565, lng: 121.2775 },
+  { name: '義勇街商圈', lat: 24.9520, lng: 121.2920 },
+  { name: '八德中心', lat: 24.9530, lng: 121.2850 },
+  { name: '八德北(茄苳)', lat: 24.9620, lng: 121.2830 },
+  { name: '八德東(大安)', lat: 24.9480, lng: 121.2980 },
+];
+const BADE_CENTER = SEARCH_CENTERS[0]; // 步行距離計算用
+const SEARCH_RADIUS = 1500; // 1.5km（多中心點所以縮小半徑避免太多重複）
 
-// 搜尋關鍵字
+// 搜尋關鍵字（大幅擴充）
 const SEARCH_QUERIES = [
-  '餐廳 八德區',
-  '早餐 八德區',
-  '小吃 八德區',
-  '麵 八德區',
-  '便當 八德區',
-  '火鍋 八德區',
-  '咖啡 八德區',
-  '飲料 八德區',
-  '日式料理 八德區',
-  '韓式料理 八德區',
-  '牛肉麵 八德區',
-  '滷肉飯 八德區',
-  '早午餐 八德區',
-  '義大利麵 八德區',
-  '炸雞 八德區',
+  // 基本類型
+  '餐廳', '美食', '小吃', '早餐', '午餐', '晚餐',
+  // 中式
+  '便當', '自助餐', '麵', '牛肉麵', '滷肉飯', '水餃', '包子', '粥',
+  '熱炒', '快炒', '麵線', '米粉', '粄條', '客家菜',
+  '鐵板燒', '合菜', '中式餐廳',
+  // 小吃
+  '鹹酥雞', '雞排', '蚵仔煎', '臭豆腐', '蔥油餅', '肉圓', '潤餅',
+  '豆花', '刈包', '胡椒餅', '鍋貼', '炸物',
+  // 早餐早午餐
+  '早午餐', '蛋餅', '吐司', '漢堡', '三明治', 'brunch',
+  // 日韓
+  '日式料理', '壽司', '拉麵', '丼飯', '定食', '居酒屋', '日本料理',
+  '韓式料理', '韓式炸雞', '石鍋拌飯', '韓國料理',
+  // 西式
+  '義大利麵', '披薩', '牛排', '漢堡', '美式餐廳', '西餐',
+  // 火鍋
+  '火鍋', '涮涮鍋', '麻辣鍋', '酸菜白肉鍋', '薑母鴨', '羊肉爐',
+  // 東南亞
+  '越南', '泰式', '咖哩', '南洋',
+  // 飲料甜點
+  '飲料', '手搖飲', '咖啡', '茶', '甜點', '蛋糕', '麵包', '烘焙',
+  '冰店', '豆漿',
+  // 燒烤
+  '燒烤', '烤肉', '串燒', '燒肉',
+  // 速食連鎖
+  '速食', '炸雞',
+  // 素食
+  '素食', '蔬食',
 ];
 
 // ==================== API 呼叫 ====================
 
-async function searchPlaces(query, pageToken = null) {
+async function searchPlaces(query, pageToken = null, center = BADE_CENTER) {
   const params = new URLSearchParams({
     query,
-    location: `${BADE_CENTER.lat},${BADE_CENTER.lng}`,
+    location: `${center.lat},${center.lng}`,
     radius: SEARCH_RADIUS.toString(),
     language: 'zh-TW',
     key: API_KEY,
@@ -262,22 +284,31 @@ async function fetchAllPlaces() {
   }
 
   console.log('🔍 開始搜尋八德區美食...\n');
+  console.log(`📍 ${SEARCH_CENTERS.length} 個搜尋中心點 × ${SEARCH_QUERIES.length} 個關鍵字\n`);
   const allPlaces = new Map();
 
-  for (const query of SEARCH_QUERIES) {
-    console.log(`搜尋: "${query}"...`);
-    try {
-      const results = await searchPlaces(query);
-      console.log(`  找到 ${results.length} 筆`);
-      for (const place of results) {
-        if (place.place_id && !allPlaces.has(place.place_id)) {
-          allPlaces.set(place.place_id, place);
+  for (const center of SEARCH_CENTERS) {
+    console.log(`\n📍 搜尋區域: ${center.name} (${center.lat}, ${center.lng})`);
+    console.log('─'.repeat(40));
+
+    for (const keyword of SEARCH_QUERIES) {
+      const query = keyword + ' 八德';
+      console.log(`搜尋: "${query}"...`);
+      try {
+        const results = await searchPlaces(query, null, center);
+        let newCount = 0;
+        for (const place of results) {
+          if (place.place_id && !allPlaces.has(place.place_id)) {
+            allPlaces.set(place.place_id, place);
+            newCount++;
+          }
         }
+        console.log(`  找到 ${results.length} 筆（${newCount} 筆新的），累計 ${allPlaces.size}`);
+      } catch (err) {
+        console.error(`  ✗ 錯誤: ${err.message}`);
       }
-    } catch (err) {
-      console.error(`  ✗ 錯誤: ${err.message}`);
+      await new Promise(r => setTimeout(r, 300));
     }
-    await new Promise(r => setTimeout(r, 300));
   }
 
   const allResults = Array.from(allPlaces.values());
