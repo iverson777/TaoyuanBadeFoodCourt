@@ -47,6 +47,12 @@ const cuisineEmojis: Record<string, string> = {
         </div>
       </div>
       <div class="filter-section">
+        <h3>營業狀態</h3>
+        <div class="filter-pills" data-filter-group="r-open">
+          <button class="filter-pill" data-value="open">只選營業中</button>
+        </div>
+      </div>
+      <div class="filter-section">
         <h3>Lucky 最低評分</h3>
         <div class="filter-range">
           <input type="range" id="lucky-rating" min="3.5" max="5" step="0.1" value="4.3" />
@@ -94,7 +100,7 @@ const cuisineEmojis: Record<string, string> = {
     const base = document.querySelector('link[rel="icon"]')?.href?.replace('favicon.svg', '') || '/TaoyuanBadeFoodCourt/';
 
     // Filter state
-    const rFilters = { category: null, cuisine: null, walking: null };
+    const rFilters = { category: null, cuisine: null, walking: null, open: null };
 
     // Filter pill toggles
     document.querySelectorAll('[data-filter-group^="r-"]').forEach(group => {
@@ -118,6 +124,7 @@ const cuisineEmojis: Record<string, string> = {
         if (rFilters.category && !r.category.includes(rFilters.category)) return false;
         if (rFilters.cuisine && r.cuisine !== rFilters.cuisine) return false;
         if (rFilters.walking && r.walkingMinutes > parseInt(rFilters.walking)) return false;
+        if (rFilters.open === 'open' && window.BadeFood.isOpenNow(r.openingHours) !== true) return false;
         if (window.BadeFood.isBlacklisted(r.id)) return false;
         return true;
       });
@@ -169,6 +176,7 @@ const cuisineEmojis: Record<string, string> = {
                 <span>(${r.reviewCount})</span>
                 <span class="card-price">${priceLabel}</span>
                 <span class="card-walking">🚶 ${r.walkingMinutes}分</span>
+                ${window.BadeFood.openStatusHtml(r.openingHours)}
               </div>
             </div>
           </div>
@@ -179,7 +187,6 @@ const cuisineEmojis: Record<string, string> = {
           </div>
           ${dishesHtml}
           <div class="card-address">${r.address}</div>
-          <div class="card-hours">${r.hours}</div>
           ${personal.visitCount > 0 ? `<div style="font-size:0.8rem;color:var(--color-text-light);margin-top:6px;">已造訪 ${personal.visitCount} 次${personal.myRating ? ' | 私心 ' + '★'.repeat(personal.myRating) : ''}</div>` : ''}
           <div class="card-actions">
             <a class="card-action-btn primary" href="${r.googleMapsUrl}" target="_blank" rel="noopener">Google Maps 導航</a>

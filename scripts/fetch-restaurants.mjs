@@ -23,6 +23,7 @@ const IMAGES_DIR = path.join(__dirname, '..', 'public', 'images');
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY || 'AIzaSyAQSkrYp-4i8rwj6g_atgi1-_1Lv3ZrJOU';
 const FORCE = process.argv.includes('--force');
 const PHOTOS_ONLY = process.argv.includes('--photos-only');
+const HOURS_ONLY = process.argv.includes('--hours-only');
 
 // 八德區中心座標
 const BADE_CENTER = { lat: 24.9530, lng: 121.2850 };
@@ -194,6 +195,64 @@ function transformPlace(place) {
   };
 }
 
+// ==================== 營業時間 ====================
+
+const HOURS_CACHE_FILE = path.join(__dirname, 'hours-cache.json');
+
+async function fetchAllHours(restaurants) {
+  // 讀取已有的 cache
+  let hoursCache = {};
+  if (fs.existsSync(HOURS_CACHE_FILE)) {
+    hoursCache = JSON.parse(fs.readFileSync(HOURS_CACHE_FILE, 'utf-8'));
+  }
+
+  let fetched = 0;
+  let cached = 0;
+  let failed = 0;
+
+  for (const r of restaurants) {
+    const pid = r.placeId || r.id;
+    if (!pid) continue;
+
+    // 已有 cache 就跳過
+    if (hoursCache[pid] && !FORCE) {
+      r.openingHours = hoursCache[pid];
+      cached++;
+      continue;
+    }
+
+    console.log(`  🕐 ${r.name}`);
+    try {
+      const details = await getPlaceDetails(pid);
+      if (details.opening_hours && details.opening_hours.periods) {
+        const periods = details.opening_hours.periods.map(p => ({
+          day: p.open.day,
+          open: p.open.time,
+          close: p.close ? p.close.time : '2359',
+        }));
+        r.openingHours = periods;
+        hoursCache[pid] = periods;
+        fetched++;
+      } else {
+        r.openingHours = null;
+        hoursCache[pid] = null;
+        fetched++;
+      }
+    } catch (err) {
+      console.log(`    ✗ ${err.message}`);
+      r.openingHours = null;
+      failed++;
+    }
+
+    // 避免 rate limit
+    await new Promise(resolve => setTimeout(resolve, 150));
+  }
+
+  // 存 cache
+  fs.writeFileSync(HOURS_CACHE_FILE, JSON.stringify(hoursCache, null, 2), 'utf-8');
+  console.log(`\n🕐 營業時間: ${fetched} 筆新抓, ${cached} 筆 cache, ${failed} 筆失敗`);
+}
+
 // ==================== 主程式 ====================
 
 async function fetchAllPlaces() {
@@ -299,10 +358,16 @@ async function main() {
   console.log(`⭐ 篩選後: ${restaurants.length} 間（3.5★ 以上, 10+ 評價, 八德/桃園區）\n`);
 
   // Step 3: 下載照片
-  if (!PHOTOS_ONLY) {
+  if (!PHOTOS_ONLY && !HOURS_ONLY) {
     console.log('📷 開始下載餐廳照片...\n');
   }
-  await downloadAllPhotos(restaurants);
+  if (!HOURS_ONLY) {
+    await downloadAllPhotos(restaurants);
+  }
+
+  // Step 3.5: 抓營業時間
+  console.log('\n🕐 開始抓取營業時間...\n');
+  await fetchAllHours(restaurants);
 
   // Step 4: 清除暫存 _photoRef，寫入 restaurants.json
   const cleanRestaurants = restaurants.map(({ _photoRef, ...rest }) => rest);

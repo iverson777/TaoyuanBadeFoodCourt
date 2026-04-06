@@ -15,9 +15,10 @@ interface Props {
   hours: string;
   image: string | null;
   dishes: string[];
+  openingHours?: { day: number; open: string; close: string }[] | null;
 }
 
-const { id, name, category, cuisine, priceRange, rating, reviewCount, address, googleMapsUrl, landmark, walkingMinutes, tags, hours, image, dishes } = Astro.props;
+const { id, name, category, cuisine, priceRange, rating, reviewCount, address, googleMapsUrl, landmark, walkingMinutes, tags, hours, image, dishes, openingHours } = Astro.props;
 
 const cuisineLabels: Record<string, string> = {
   taiwanese: '台式',
@@ -58,6 +59,7 @@ const emoji = cuisineEmojis[cuisine] || '🍽️';
   data-walking={walkingMinutes}
   data-landmark={landmark}
   data-review-count={reviewCount}
+  data-opening-hours={openingHours ? JSON.stringify(openingHours) : ''}
 >
   <!-- 餐廳圖片 -->
   <div class="card-image">
@@ -82,6 +84,7 @@ const emoji = cuisineEmojis[cuisine] || '🍽️';
           <span>({reviewCount})</span>
           <span class="card-price">{priceLabel}</span>
           <span class="card-walking">🚶 {walkingMinutes}分</span>
+          <span class="card-open-status"></span>
         </div>
       </div>
       <button class="card-fav-btn" data-fav-id={id} title="收藏" aria-label="收藏">&#9825;</button>

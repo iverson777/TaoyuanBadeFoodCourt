@@ -94,6 +94,7 @@ const cuisineEmojis: Record<string, string> = {
                   <span>(${r.reviewCount})</span>
                   <span class="card-price">${priceLabel}</span>
                   <span class="card-walking">🚶 ${r.walkingMinutes}分</span>
+                  ${window.BadeFood.openStatusHtml(r.openingHours)}
                 </div>
               </div>
               <button class="card-fav-btn is-fav" data-unfav-id="${r.id}" title="移除收藏">&#9829;</button>

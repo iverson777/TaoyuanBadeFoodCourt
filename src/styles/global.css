@@ -801,6 +801,20 @@ button {
   vertical-align: middle;
 }
 
+/* === Open Status Badge === */
+.open-status {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.open-status.open { color: #16a34a; }
+.open-status.closed { color: #dc2626; }
+.open-status.unknown { color: #9ca3af; }
+
 /* === Utilities === */
 .sr-only {
   position: absolute;

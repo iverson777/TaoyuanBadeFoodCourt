@@ -344,6 +344,17 @@ const restaurants = data.restaurants.sort((a, b) => b.rating - a.rating);
       });
     }
     injectCustomCards();
+
+    // === Render open/closed status on all cards ===
+    cards.forEach(function(card) {
+      var hoursAttr = card.dataset.openingHours;
+      if (!hoursAttr) return;
+      try {
+        var hours = JSON.parse(hoursAttr);
+        var statusEl = card.querySelector('.card-open-status');
+        if (statusEl) statusEl.innerHTML = window.BadeFood.openStatusHtml(hours);
+      } catch(e) {}
+    });
   })();
   </script>
 

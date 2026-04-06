@@ -97,6 +97,42 @@ const base = import.meta.env.BASE_URL;
 
       isCustom(id) {
         return id && id.indexOf('custom-') === 0;
+      },
+
+      // === 營業時間判斷 ===
+      isOpenNow(openingHours) {
+        if (!openingHours || !openingHours.length) return null; // 無資料
+        var now = new Date();
+        var day = now.getDay(); // 0=Sun
+        var hhmm = ('0' + now.getHours()).slice(-2) + ('0' + now.getMinutes()).slice(-2);
+
+        for (var i = 0; i < openingHours.length; i++) {
+          var p = openingHours[i];
+          if (p.day !== day) continue;
+          // 跨日營業（close < open 表示過午夜）
+          if (p.close < p.open) {
+            if (hhmm >= p.open || hhmm < p.close) return true;
+          } else {
+            if (hhmm >= p.open && hhmm < p.close) return true;
+          }
+        }
+
+        // 也檢查前一天的跨日營業
+        var yesterday = (day + 6) % 7;
+        for (var j = 0; j < openingHours.length; j++) {
+          var q = openingHours[j];
+          if (q.day !== yesterday) continue;
+          if (q.close < q.open && hhmm < q.close) return true;
+        }
+
+        return false;
+      },
+
+      openStatusHtml(openingHours) {
+        var status = this.isOpenNow(openingHours);
+        if (status === null) return '<span class="open-status unknown">⚪ 未知</span>';
+        if (status) return '<span class="open-status open">🟢 營業中</span>';
+        return '<span class="open-status closed">🔴 休息中</span>';
       }
     };
   </script>

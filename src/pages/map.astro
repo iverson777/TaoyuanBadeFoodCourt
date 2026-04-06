@@ -32,6 +32,7 @@ import data from '../data/restaurants.json';
     dishes: r.dishes,
     googleMapsUrl: r.googleMapsUrl,
     category: r.category,
+    openingHours: r.openingHours || null,
   })))} />
 
   <script is:inline>
@@ -144,9 +145,9 @@ import data from '../data/restaurants.json';
               '<div style="font-size:12px;color:#666;margin-bottom:4px;">' +
                 '⭐ ' + r.rating + ' (' + r.reviewCount + ') | ' + price + ' | ' + cLabel +
               '</div>' +
+              '<div style="font-size:12px;margin-bottom:4px;">' + window.BadeFood.openStatusHtml(r.openingHours) + '</div>' +
               (dishesText ? '<div style="font-size:11px;color:#e8803a;margin-bottom:4px;">招牌：' + dishesText + '</div>' : '') +
-              '<div style="font-size:11px;color:#888;">' + r.address + '</div>' +
-              '<div style="font-size:11px;color:#888;margin-bottom:6px;">' + r.hours + '</div>' +
+              '<div style="font-size:11px;color:#888;margin-bottom:6px;">' + r.address + '</div>' +
               '<a href="' + r.googleMapsUrl + '" target="_blank" rel="noopener"' +
                 ' style="display:inline-block;background:#e8803a;color:#fff;padding:4px 12px;border-radius:6px;font-size:12px;text-decoration:none;">' +
                 '導航' +
