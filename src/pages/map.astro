@@ -70,6 +70,40 @@ import data from '../data/restaurants.json';
 
       var infoWindow = new google.maps.InfoWindow();
 
+      // 用 Geocoder 標出「我的位置」藍點
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: '桃園市八德區永福街46號' }, function(results, status) {
+        if (status === 'OK' && results[0]) {
+          var homePos = results[0].geometry.location;
+          new google.maps.Marker({
+            position: homePos,
+            map: map,
+            title: '我的位置',
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: '#4285F4',
+              fillOpacity: 1,
+              strokeColor: '#fff',
+              strokeWeight: 3,
+              scale: 9,
+            },
+            zIndex: 999,
+          });
+          // 加個淡藍色外圈
+          new google.maps.Circle({
+            center: homePos,
+            radius: 30,
+            map: map,
+            fillColor: '#4285F4',
+            fillOpacity: 0.15,
+            strokeColor: '#4285F4',
+            strokeOpacity: 0.3,
+            strokeWeight: 1,
+          });
+          map.setCenter(homePos);
+        }
+      });
+
       var cuisineColors = {
         taiwanese: '#e8803a',
         japanese: '#e63946',
